@@ -1,1 +1,0 @@
-# ohchanKyu.github.io

@@ -18,9 +18,9 @@ While this manual tries to be beginner-friendly, as a user of Jekyll it is assum
 
 ## Using Development Framework
 * [Spring-boot]{:.heading.flip-title} --- Spring boot 개발과정 및 시행 착오
-* [Authentication]{:.heading.flip-title} --- Session & Jwt의 차이점 및 장단점 정리
+* [Authentication]{:.heading.flip-title} --- Session & Jwt 인증의 차이점 및 장단점 정리
 * [React]{:.heading.flip-title} --- React Framework 개발 과정 및 시행 착오
-* [Flask]{:.heading.flip-title} --- Python Flask를 통한 Web 개발 과정
+* [Flask]{:.heading.flip-title} --- Python Flask를 통한 Web 개발
 {:.related-posts.faded}
 
 ## Using AWS
@@ -32,4 +32,5 @@ While this manual tries to be beginner-friendly, as a user of Jekyll it is assum
 [Authentication]: authentication.md
 [React]: react.md
 [Config]: aws.md
+[Flask]: flask.md
 

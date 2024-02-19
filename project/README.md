@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Documentation
+title: Project
 description: >
   Here you should be able to find everything you need to know to accomplish the most common tasks when blogging with Hydejack.
 hide_description: true
@@ -35,3 +35,15 @@ While this manual tries to be beginner-friendly, as a user of Jekyll it is assum
 * [NOTICE]{:.heading.flip-title} --- Parts of this program are provided under separate licenses.
 * [CHANGELOG]{:.heading.flip-title} --- Version history of Hydejack.
 {:.related-posts.faded}
+
+[install]: install.md
+[upgrade]: upgrade.md
+[config]: config.md
+[basics]: basics.md
+[writing]: writing.md
+[scripts]: scripts.md
+[build]: build.md
+[advanced]: advanced.md
+[LICENSE]: ../LICENSE.md
+[NOTICE]: ../NOTICE.md
+[CHANGELOG]: ../CHANGELOG.md

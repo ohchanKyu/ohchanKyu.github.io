@@ -31,6 +31,7 @@ While this manual tries to be beginner-friendly, as a user of Jekyll it is assum
 여러 기업은 다양한 목적을 위해 REST API를 제공하고 있으며, 이들 API는 특정 기능을 수행하기 위한 업계 표준 인터페이스를 제공한다. 대표적인 기업 중 몇 개의 REST API에 대한 기본 정보와 Request Header, Content Type,
 Api Key 발급 등 설정 및 요청과 응답 예제이다.
 {:.note}
+
 * [Google]{:.heading.flip-title} --- Google API 사용법 및 예제 
 * [Kakao]{:.heading.flip-title} --- Kakao API 사용법 및 예제 
 * [Naver]{:.heading.flip-title} --- Naver API 사용법 및 예제 

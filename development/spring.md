@@ -7,12 +7,6 @@ title: Spring boot
 
 # The name of the tag, used in a post's front matter (e.g. tags: [<slug>]).
 slug: spring
-
-# (Optional) Write a short (~150 characters) description of this featured tag.
-description: >
-  - Spring Boot Framework의 사용 및 여러 가지 에러 해결
-  - Spring Boot를 통한 SSR 개발
-  - Spring Boot + React를 통한 SPA / CSR 개발
   
 # (Optional) You can disable grouping posts by date.
 # no_groups: true
@@ -21,3 +15,7 @@ description: >
 # DON'T USE THIS SETTING IN YOUR CATEGORIES!
 sitemap: false
 ---
+
+- Spring Boot Framework의 사용 및 여러 가지 에러 해결
+- Spring Boot를 통한 SSR 개발
+- Spring Boot + React를 통한 SPA / CSR 개발

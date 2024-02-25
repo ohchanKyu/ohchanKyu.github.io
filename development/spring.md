@@ -10,9 +10,9 @@ slug: spring
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  Spring boot Framework의 사용 및 여러가지 에러 해결
-  Spring boot를 통한 SSR 개발
-  Spring boot + React를 통한 SPA / CSR 개발
+  - Spring boot Framework의 사용 및 여러가지 에러 해결
+  - Spring boot를 통한 SSR 개발
+  - Spring boot + React를 통한 SPA / CSR 개발
   
 # (Optional) You can disable grouping posts by date.
 # no_groups: true

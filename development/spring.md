@@ -10,7 +10,10 @@ slug: spring
 
 # (Optional) Write a short (~150 characters) description of this featured tag.
 description: >
-  Spring boot 개발
+  Spring boot Framework를 통한 웹 개발.
+  
+
+
 
 # (Optional) You can disable grouping posts by date.
 # no_groups: true

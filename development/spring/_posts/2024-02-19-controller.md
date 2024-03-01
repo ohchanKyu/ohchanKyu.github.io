@@ -31,10 +31,12 @@ public ResponseEntity<String> requestParamTest(@RequestParam("email") String ema
     return ResponseEntity.ok(email);
 }
 ~~~
+
 ### - @RequestPart
 ~~~java
 
 ~~~
+
 ### - @RequestBody
 ~~~java
 @PostMapping("/addMember")
@@ -42,6 +44,7 @@ public ResponseEntity<Member> requestBodyTest(@RequestBody Member member){
     return ResponseEntity.ok(member);
 }
 ~~~
+
 ### - @PathVariable
 ~~~java
 @GetMapping("/{email}")

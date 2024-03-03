@@ -57,11 +57,35 @@ public class MainController {
 
 }
 ~~~
+
 @Controller와 @RequestMapping에 대한 예시이다.  
 - @Controller  
 해당 어노테이션을 통해 Controller Class라고 알려준다.  
 - @RequestMapping  
-/home이라는 URL로 접속시 사용자에게 index.html이라는 html 문서를 보여줘라고 알려주는 것이다.  
+/home이라는 URL로 접속시 사용자에게 index.html이라는 html 문서를 보여준다.
+
+~~~java
+@Controller
+@RequestMapping("/test")
+public class TestController {
+
+    @RequestMapping("/home")
+    public String homePage(){
+        return "index.html";
+    }
+
+    @RequestMapping("/blog")
+    public String blogPage(){
+        return "blog.html";
+    }
+}
+~~~
+프로젝트가 커질수록 Controller의 수가 많아질 수 있다.  
+하나의 Controller만 사용하는 것이 아닌 유지보수가 쉽게 용도에 맞게 여러 Controller를 사용하는 것이  
+바람직할 수도 있다. 따라서 Controller가 여러개 일때 위의 코드처럼 @RequestMapping을 Class위에 하여    
+URL에 따라 구분하는 것도 좋은방법이다.  
+위의 코드에 따르면 http://localhost:8080/test/home으로 URL 작성해야 해당 메소드로 연결된다.  
+또한 http://localhost:8080/test/blog URL로 접속한다면 blogPage()라는 메소드로 연결된다.
 
 ## Controller vs Rest Controller
 ### - @Controller

@@ -107,11 +107,17 @@ JS 함수로 해당 함수안에서 useContext()를 통해 저장소를 가져�
 그렇다면 이에 대한 문제점은 무엇일까?  
 - 반복되는 코드  
 - 유지보수의 문제    
+- useContext() 저장소의 상태 갱신  
 
 - 반복되는 코드 / 유지보수의 문제  
 코드의 재사용성이다. 해당 프로젝트를 진행하면서 여러 백앤드 서버의 Rest API를 불러오게 되었다.  
 하지만 많은 Rest API를 호출하면서 모든 호출하는 JSX 파일마다 useContext()의 저장소를 불러오고  
-요청에 대한 에러처리 및 Refresh Token을 통한 재인증을 구현하는 것은 너무 비효율적이라고 느껴졌다.  
+요청에 대한 에러처리 및 Refresh Token을 통한 재인증을 구현하는 것은 비효율적이다.  
+
+- useContext() 저장소의 상태 갱신   
+다음 문제는 useContext() 저장소의 상태 갱신 문제이다.  
+이에 대한 문제는 상태 갱신에서 React의 렌더링 문제와 연관되며 아래의 포스팅을 참고하면 된다.  
+* [Posting!]{:.heading.flip-title} --- Custom Hook에서 useContext의 상태 갱신 문제
 
 ~~~js
 const tokenCtx = useContext(authContext);
@@ -195,10 +201,7 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
 그러나 주의할 점은 useContext()를 사용하므로 일반적인 JS 함수를 사용하지 못한다.  
 따라서 Custom Hook을 만들기로 결정하게 되었다.  
 
-- useContext() 저장소의 상태 갱신   
-다음 문제는 useContext() 저장소의 상태 갱신 문제이다.  
-이에 대한 문제는 상태 갱신에서 React의 렌더링 문제와 연관되며 아래의 포스팅을 참고하면 된다.  
-* [Posting!]{:.heading.flip-title} --- Custom Hook에서 useContext의 상태 갱신 문제
+
 
 ## Side Project에서의 사용 예시
 

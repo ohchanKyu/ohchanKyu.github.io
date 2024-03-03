@@ -64,5 +64,136 @@ Jwt인증을 구현하게 되면서 jwt token을 관리할 방법을 고민하�
 나는 useContext() Hook을 사용하였고, 이에 따라 jwt 인증 방식으로  
 Spring boot 백앤드로 요청과 함께 Token을 보내야만 했다.  
 
+~~~js
+login({ email, password })
+        .then(response => {
+           return response.data
+        }).then(
+            responseData => {
+                const {id,name,email,password} = responseData.MEMBER;
+                const {accessToken, grantType, refreshToken, accessTokenExpiresIn} = responseData.TOKEN;
+
+                localStorage.setItem("accessToken",accessToken); // LocalStorage에 accessToken 저장
+                loginCtx.loginUser(id,name,email,password);
+                tokenCtx.setUserToken(grantType,accessToken,refreshToken,accessTokenExpiresIn);
+                navigate("/NaHC/main");
+            }
+        )
+~~~
+위 코드는 LoginPage의 JS 코드 중 일부이다.  
+login은 Axios를 이용한 요청 메소드이다.  
+그리고 백앤드 서버에서 Token 및 Login 사용자의 정보를 받고 useContext 저장소에 저장한다.  
+이 과정까지는 Custom Hook의 필요성을 못느꼈다.  
+이제 Token과 함께 Axios 요청을 보내는 코드를 살펴보면 다음과 같다.  
+
+~~~js
+export const editName = ({ email, newName, grantType, accessToken }) => {
+    return memberApiClient.post('/editName',null,{
+        params : {
+            email : email,
+            newName : newName
+        },
+        withCredentials: true,
+        headers: { Authorization:`${grantType} ${accessToken}`}
+    }) 
+}
+~~~
+Axios 이용한 서버로의 요청 코드로 grantType과 AccessToken을 통해 백앤드 서버에서는 검증을 진행한다.  
+하지만 해당 editName() 이라는 메소드는 JS 함수로 해당 함수안에서 useContext()를 통해 저장소를 가져올 수 없다.  
+따라서 editName이라는 메소드를 사용하는 JSX File에서 useContext()를 통해 저장소를 가져오고  
+해당 메소드를 호출해야 한다.  
+
+그렇다면 이에 대한 문제점은 무엇일까?  
+- 반복되는 코드  
+- 유지보수의 문제  
+- useContext() 저장소의 데이터 갱신  
+
+- 반복되는 코드 / 유지보수의 문제  
+코드의 재사용성이다. 해당 프로젝트를 진행하면서 여러 백앤드 서버의 Rest API를 불러오게 되었다.  
+하지만 많은 Rest API를 호출하면서 모든 호출하는 JSX 파일마다 useContext()의 저장소를 불러오고  
+요청에 대한 에러처리 및 Refresh Token을 통한 재인증을 구현하는 것은 너무 비효율적이라고 느껴졌다.  
+
+~~~js
+const tokenCtx = useContext(authContext);
+const loginCtx = useContext(loginContext);
+
+const tryGrantType = tokenCtx.grantType;
+const tryAccessToken = tokenCtx.accessToken;
+const tryRefreshToken = tokenCtx.refreshToken;
+const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
+
+ try{
+    
+    // Axios 함수 호출
+    const editNameResponse = await editName({
+        grantType : tryGrantType,
+        accessToken : tryAccessToken,
+        email : loginCtx.email,
+        newName : newName
+    });
+
+    // Axios 함수 호출하여 Data 획득
+    const editNameResponseData = await editNameResponse.data;
+    }catch(error){
+
+        // AccessToken이 만료된 경우
+        if (error.response.status === 401){
+
+            try {
+                const token = {
+                    grantType : tryGrantType,
+                    accessToken : tryAccessToken,
+                    accessTokenExpiresIn : tryAccessTokenExpiresIn,
+                    refreshToken : tryRefreshToken
+                };
+
+                // refreshToken을 통해 재인증 및 새로운 jwt Token 발급 함수
+                const refreshTokenResponse = await refreshTokenProcess(token);
+                const refreshTokenResponseData = await refreshTokenResponse.data;
+
+                const { 
+                    accessToken : newAccessToken,  
+                    grantType : newGrantType, 
+                    accessTokenExpiresIn : newaccessTokenExpiresIn, 
+                    refreshToken : newRefreshToken 
+                } = refreshTokenResponseData;
+
+                tokenCtx.setUserToken(newGrantType,newAccessToken,newRefreshToken,newaccessTokenExpiresIn); 
+
+
+                // 기존의 요청하였던 editName() Rest API를 재호출
+                const newRefreshFunctionResponse = await editName({
+                    grantType : newGrantType,
+                    accessToken : newAccessToken,
+                    email : loginCtx.email,
+                    newName : newName
+                });
+
+                const editNameResponseData = await editNameResponse.data;
+            }catch(error){
+
+                // 만약 Refresh Token도 만료된 경우 재로그인을 요청
+                if (error.response.status === 401 || error.response.status === 403){
+                    Swal.fire({
+                        icon: 'warning',                        
+                        title: '세션 만료',         
+                        html: `세션이 만료되었습니다.<br> 다시 로그인 해주세요.`
+                    });
+                    loginCtx.logoutUser();
+                    tokenCtx.removeUserToken();
+                    navigate('/');
+                }
+            }
+            
+        }
+    } 
+~~~
+위의 코드는 Rest API를 호출하고 만약 AccessToken이 만료시 Refresh Token을 통해  
+재인증을 하는 코드이다. 만약 모든 API 호출에 해당 코드처럼 에러처리 및 재인증을 포함한다면  
+코드가 너무 길어져 가독성이 떨어지고 이는 유지보수도 힘들어진다.  
+따라서 이 반복되는 코드를 새로운 함수로 생성하거나 Hook을 만들어 재사용을 할 필요가 있다.  
+
+그러나 주의할 점은 useContext()를 사용하므로 일반적인 JS 함수를 사용하지 못한다.  
+따라서 Custom Hook을 만들기로 결정하게 되었다.  
 ## Side Project에서의 사용 예시
 

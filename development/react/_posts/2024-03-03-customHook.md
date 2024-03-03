@@ -117,7 +117,7 @@ JS 함수로 해당 함수안에서 useContext()를 통해 저장소를 가져�
 - useContext() 저장소의 상태 갱신   
 다음 문제는 useContext() 저장소의 상태 갱신 문제이다.  
 이에 대한 문제는 상태 갱신에서 React의 렌더링 문제와 연관되며 아래의 포스팅을 참고하면 된다.  
-* [Posting!]{:.heading.flip-title} --- Custom Hook에서 useContext의 상태 갱신 문제
+[Custom Hook에서 useContext의 상태 갱신 문제][url]
 
 ~~~js
 const tokenCtx = useContext(authContext);
@@ -285,4 +285,4 @@ const useAuthFunction = () => {
 export default useAuthFunction;
 ~~~
 
-[Posting!]: 2024-03-03-localstorageAndRendering.md
+[url]: 2024-03-03-localstorageAndRendering.md

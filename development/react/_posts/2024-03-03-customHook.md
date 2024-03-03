@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "Custom Hook"
+title:  "Axios 통신을 위한 Custom Hook 사용"
 date:   2024-03-03 01:38:04 +0900
 
 ---
@@ -100,15 +100,15 @@ export const editName = ({ email, newName, grantType, accessToken }) => {
     }) 
 }
 ~~~
-Axios 이용한 서버로의 요청 코드로 grantType과 AccessToken을 통해 백앤드 서버에서는 검증을 진행한다.  
-하지만 해당 editName() 이라는 메소드는 JS 함수로 해당 함수안에서 useContext()를 통해 저장소를 가져올 수 없다.  
+Axios 이용한 서버로의 요청 코드로 grantType과 AccessToken을 통해 
+백앤드 서버에서는 검증을 진행한다. 하지만 해당 editName() 이라는 메소드는  
+JS 함수로 해당 함수안에서 useContext()를 통해 저장소를 가져올 수 없다.  
 따라서 editName이라는 메소드를 사용하는 JSX File에서 useContext()를 통해 저장소를 가져오고  
 해당 메소드를 호출해야 한다.  
 
 그렇다면 이에 대한 문제점은 무엇일까?  
 - 반복되는 코드  
-- 유지보수의 문제  
-- useContext() 저장소의 데이터 갱신  
+- 유지보수의 문제    
 
 - 반복되는 코드 / 유지보수의 문제  
 코드의 재사용성이다. 해당 프로젝트를 진행하면서 여러 백앤드 서버의 Rest API를 불러오게 되었다.  
@@ -162,7 +162,6 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
 
                 tokenCtx.setUserToken(newGrantType,newAccessToken,newRefreshToken,newaccessTokenExpiresIn); 
 
-
                 // 기존의 요청하였던 editName() Rest API를 재호출
                 const newRefreshFunctionResponse = await editName({
                     grantType : newGrantType,
@@ -197,5 +196,90 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
 
 그러나 주의할 점은 useContext()를 사용하므로 일반적인 JS 함수를 사용하지 못한다.  
 따라서 Custom Hook을 만들기로 결정하게 되었다.  
+
+- useContext() 저장소의 상태 갱신 
+다음 문제는 useContext() 저장소의 상태 갱신 문제이다.  
+이에 대한 문제는 상태 갱신에서 React의 렌더링 문제와 연관되며 아래의 포스팅을 참고하면 된다.  
+
+
 ## Side Project에서의 사용 예시
 
+~~~js
+const useAuthFunction = () => {
+
+    const tokenCtx = useContext(authContext);
+    const loginCtx = useContext(loginContext);
+    const navigate = useNavigate();
+
+    const authFunctionHandler = async (userFunction, parameter) => {
+        
+        const tryGrantType = tokenCtx.grantType;
+        const tryAccessToken = localStorage.getItem("accessToken");
+        const tryRefreshToken = tokenCtx.refreshToken;
+        const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
+
+        try{
+
+            const functionResponse = await userFunction({
+                grantType : tryGrantType,
+                accessToken : tryAccessToken,
+                ...parameter
+            });
+            const functionResponseData = await functionResponse.data;
+            return functionResponseData;
+
+        }catch(error){
+            
+            if (error.response.status === 401){
+
+                try {
+                    const token = {
+                        grantType : tryGrantType,
+                        accessToken : tryAccessToken,
+                        accessTokenExpiresIn : tryAccessTokenExpiresIn,
+                        refreshToken : tryRefreshToken
+                    };
+    
+                    const refreshTokenResponse = await refreshTokenProcess(token);
+                    const refreshTokenResponseData = await refreshTokenResponse.data;
+    
+                    const { 
+                        accessToken : newAccessToken,  
+                        grantType : newGrantType, 
+                        accessTokenExpiresIn : newaccessTokenExpiresIn, 
+                        refreshToken : newRefreshToken 
+                    } = refreshTokenResponseData;
+    
+                    localStorage.setItem("accessToken",newAccessToken);
+                    tokenCtx.setUserToken(newGrantType,newAccessToken,newRefreshToken,newaccessTokenExpiresIn); 
+    
+                    const newRefreshFunctionResponse = await userFunction({
+                        grantType : newGrantType,
+                        accessToken : newAccessToken,
+                        ...parameter
+                    });
+    
+                    const newRefreshFunctionResponseData = await newRefreshFunctionResponse.data;
+                    return newRefreshFunctionResponseData;
+                }catch(error){
+                    if (error.response.status === 401 || error.response.status === 403){
+                        Swal.fire({
+                            icon: 'warning',                        
+                            title: '세션 만료',         
+                            html: `세션이 만료되었습니다.<br> 다시 로그인 해주세요.`
+                        });
+                        loginCtx.logoutUser();
+                        tokenCtx.removeUserToken();
+                        localStorage.removeItem("accessToken");
+                        navigate('/');
+                    }
+                }
+                
+            }
+        } 
+    };
+    return authFunctionHandler;
+};
+
+export default useAuthFunction;
+~~~

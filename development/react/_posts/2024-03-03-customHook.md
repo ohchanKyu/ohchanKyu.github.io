@@ -48,12 +48,10 @@ const MainComponent = () => {
     )
 };
 ~~~
-그러나 위의 코드에서처럼 일반적인 JS 함수에서 useState()를 호출한다면  
-오류를 경험하게 된다.
+그러나 위의 코드에서처럼 일반적인 JS 함수에서 useState()를 호출한다면 오류를 경험하게 된다.  
 
 그렇다면 위의 조건대로 함수형 컴포넌트에서 사용하면 되는것 아닌가?  
-Side Project를 진행하면서 함수형 컴포넌트 외에도 Hook을 사용해야 하는  
-경우를 접하게 되었다.  
+Side Project를 진행하면서 함수형 컴포넌트 외에도 Hook을 사용해야 하는 경우를 접하게 되었다.  
 
 ## Side Project에서의 사용 이유
 - Axios
@@ -100,7 +98,7 @@ export const editName = ({ email, newName, grantType, accessToken }) => {
     }) 
 }
 ~~~
-Axios 이용한 서버로의 요청 코드로 grantType과 AccessToken을 통해 
+Axios 이용한 서버로의 요청 코드로 grantType과 AccessToken을 통해   
 백앤드 서버에서는 검증을 진행한다. 하지만 해당 editName() 이라는 메소드는  
 JS 함수로 해당 함수안에서 useContext()를 통해 저장소를 가져올 수 없다.  
 따라서 editName이라는 메소드를 사용하는 JSX File에서 useContext()를 통해 저장소를 가져오고  
@@ -197,10 +195,10 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
 그러나 주의할 점은 useContext()를 사용하므로 일반적인 JS 함수를 사용하지 못한다.  
 따라서 Custom Hook을 만들기로 결정하게 되었다.  
 
-- useContext() 저장소의 상태 갱신 
+- useContext() 저장소의 상태 갱신   
 다음 문제는 useContext() 저장소의 상태 갱신 문제이다.  
 이에 대한 문제는 상태 갱신에서 React의 렌더링 문제와 연관되며 아래의 포스팅을 참고하면 된다.  
-* [Click!]{:.heading.flip-title} --- Custom Hook에서 useContext의 상태 갱신 문제
+* [Posting!]{:.heading.flip-title} --- Custom Hook에서 useContext의 상태 갱신 문제
 
 ## Side Project에서의 사용 예시
 
@@ -284,4 +282,4 @@ const useAuthFunction = () => {
 export default useAuthFunction;
 ~~~
 
-[Click!]: 2024-03-03-localstorageAndRendering.md
+[Posting!]: 2024-03-03-localstorageAndRendering.md

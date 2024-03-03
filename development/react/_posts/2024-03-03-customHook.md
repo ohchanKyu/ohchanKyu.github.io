@@ -55,10 +55,12 @@ const MainComponent = () => {
 Side Project를 진행하면서 함수형 컴포넌트 외에도 Hook을 사용해야 하는  
 경우를 접하게 되었다.  
 
-## Side Projec결t에서의 사용 이유
+## Side Project에서의 사용 이유
 - Axios
 - Spring boot
-- React
+- React  
+
+
 사이드 프로젝트를 진행하면서 위의 개발 요건으로 개발을 진행하게 되었다.  
 Jwt인증을 구현하게 되면서 jwt token을 관리할 방법을 고민하였다.  
 나는 useContext() Hook을 사용하였고, 이에 따라 jwt 인증 방식으로  

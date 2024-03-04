@@ -17,8 +17,7 @@ props chain이 너무 길어지는 문제점이 발생한다.
 따라서 명시적으로 props를 전달하지 않고도 전역 데이터를 사용할 수 있다.  
 
 useContext를 통해 로그인한 유저의 정보를 저장하거나  
-application에서 사용하는 전역 변수들을 저장소로서 저장하고  
-데이터 조회 및 변경도 가능하다.  
+application에서 사용하는 전역 변수들을 저장소로서 저장하고 데이터 조회 및 변경도 가능하다.  
 
 ~~~js
 // file: `login-context.js`
@@ -114,8 +113,7 @@ export default LoginProvider;
 - Provider를 생성하여 자식 컴포넌트에서 해당 저장소의 데이터를 사용하도록 설정  
 
 return문에서 생성한 저장소 객체인 loginContext에서 Provider를 추가하여  
-생성한 context를 하위 컴포넌트에게 전달할 수 있도록 한다.  
-따라서 App.js를 다음과 같이 수정한다.  
+생성한 context를 하위 컴포넌트에게 전달할 수 있도록 한다. 따라서 App.js를 다음과 같이 수정한다.  
 
 ~~~js
 // file : 'App.ks'
@@ -144,7 +142,29 @@ useReducer를 이용한다. 결국 데이터를 갱신하는 것은 useContext�
 따라서 React의 컴포넌트 렌더링 규칙을 따를 수 밖에 없다.  
 
 하지만 렌더링 규칙을 따른다는 점에서 Project를 진행하면서 문제점을 겪게 되었다.  
+Jwt인증을 구현하는 과정에서 백앤드 Spring boot와 통신할 때 상태 갱신의 문제점이 생겼다.  
 
-## JS 함수와 async / Custom Hook과의 연결
+## React에서의 상태 갱신
+~~~js
+// file : 'ExampleComponent.js'
+import React, { useState } from 'react';
 
+function ExampleComponent() {
+  const [count, setCount] = useState(0);
+
+  const handleIncrement = () => {
+    setCount(count + 1);
+    console.log('After setCount: ', count);
+  };
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleIncrement}>Increment</button>
+    </div>
+  );
+}
+~~~
+useState를 사용하여 상태를 갱신할 때, 상태 갱신은 비동기적으로 이루어집니다. 따라서 함수가 끝나고 해당 상태 갱신이 언제 처리될지 정확히 예측할 수 없습니다. 상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리됩니다.
 ## Project에서의 해결법 (localStorage)
+

@@ -310,22 +310,57 @@ Custom Hook을 사용해야 하는 이유는 다음과 같이 정리가능하다
 - 최상위 컴포넌트에서 Custom Hook을 호출헤야한다.  
 - 분기문(if, for)에서 Hook을 호출해서는 안된다.  
 
-분기문을 예로 들자면 일반적인 React 함수형 컴포넌트에서 사용하는 것과 동일하다.  
 ~~~js
 const HookTestComponent = () => {
 
-    // useTest()
+    const [sampleData,setSampleData] = useState(0);
+    // useTest() is Custom Hook sample
     // Correct Example
-    const [number,setNumber] = useTest(0);
+    const testData = useTest(sampleData);
+    setSampleData(testData);
 }
 ~~~
+위의 예시는 올바른 예시로 최상위 컴포넌트에서  
+useTest라는 Custom Hook을 사용하는 예시이다.
 
 ~~~js
 const ErrorHookComponent = (props) => {
 
+    const [sampleData,setSampleData] = useState(null);
+    // useTest() is Custom Hook sample
+    // Error Example
     if (props.item){
-        const []
+        const testData = useTest(props.item);
+        setNumber(sampleData);
     }
+}
+~~~
+위의 예시는 잘못된 예시로 분기문(if) 안에서 Hook을 호출하는 예시이다.  
+만약 함수형 컴포넌트 렌더링 초기에 해당 Hook을 사용할 필요가 있다면  
+아래와 같이 Custom Hook에서 useEffect()를 사용해야 한다.
+
+~~~js
+const CorrectHookComponent = (props) => {
+    
+    // Correct Example
+    const [sampleData,setSampleData] = useState(null);
+    
+    const testDate = useTest(props.item);
+    setSampleData(testData);
+}
+
+const useTest = (item) => {
+
+    const [fetchData,setFetchData] = useState(null);
+
+    useEffect(() => {
+        if (item) {
+            ... Your Logic
+            setFetchData(...Your Fetch Data);
+        }
+    },[item])
+
+    return fetchData;
 }
 ~~~
 [url]: 2024-03-03-localstorageAndRendering.md

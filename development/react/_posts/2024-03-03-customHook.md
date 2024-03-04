@@ -142,7 +142,7 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
     const editNameResponseData = await editNameResponse.data;
     }catch(error){
 
-        // AccessToken이 만료된 경우
+        // AccessToken이 만료된 경우 서버에서 401로 응답한다.
         if (error.response.status === 401){
 
             try {
@@ -175,6 +175,7 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
                 });
 
                 const editNameResponseData = await editNameResponse.data;
+
             }catch(error){
 
                 // 만약 Refresh Token도 만료된 경우 재로그인을 요청
@@ -184,6 +185,7 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
                         title: '세션 만료',         
                         html: `세션이 만료되었습니다.<br> 다시 로그인 해주세요.`
                     });
+                    // 기존의 저장되어있던 저장소의 User,Token 정보 삭제
                     loginCtx.logoutUser();
                     tokenCtx.removeUserToken();
                     navigate('/');
@@ -202,7 +204,6 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
 따라서 Custom Hook을 만들기로 결정하게 되었다.  
 
 
-
 ## Side Project에서의 사용 예시
 
 ~~~js
@@ -215,6 +216,8 @@ const useAuthFunction = () => {
     const authFunctionHandler = async (userFunction, parameter) => {
         
         const tryGrantType = tokenCtx.grantType;
+        // AccessToken은 localStorage를 사용
+        // 위의 Custom Hook에서 useContext의 상태 갱신 문제 포스팅을 참고
         const tryAccessToken = localStorage.getItem("accessToken");
         const tryRefreshToken = tokenCtx.refreshToken;
         const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
@@ -251,6 +254,7 @@ const useAuthFunction = () => {
                         refreshToken : newRefreshToken 
                     } = refreshTokenResponseData;
     
+                    // 새로 발급받은 AccessToken을 localStorage에 저장
                     localStorage.setItem("accessToken",newAccessToken);
                     tokenCtx.setUserToken(newGrantType,newAccessToken,newRefreshToken,newaccessTokenExpiresIn); 
     
@@ -262,6 +266,7 @@ const useAuthFunction = () => {
     
                     const newRefreshFunctionResponseData = await newRefreshFunctionResponse.data;
                     return newRefreshFunctionResponseData;
+
                 }catch(error){
                     if (error.response.status === 401 || error.response.status === 403){
                         Swal.fire({
@@ -279,10 +284,27 @@ const useAuthFunction = () => {
             }
         } 
     };
+
     return authFunctionHandler;
 };
 
 export default useAuthFunction;
 ~~~
+위의 코드는 Side Project에서 사용한 Custom Hook이다.  
+use~라는 이름으로 시작하는 Component로 만들어 Custom Hook을 명시하고 JSX 코드를  
+return 하는 것이 아닌 JS 함수를 return하여 사용할 수 있도록 한다.  
+이를 통해 useContext라는 React Hook을 사용할 뿐만 아니라 반복되는 코드 없이  
+Custom Hook에서 return하는 함수를 통해 매개변수로 함수와 변수들을 모은 객체를  
+넘겨주어 REST API를 호출할 수 있도록 한다.  
+
+이처럼 Custom Hook을 만들어서 유지보수를 용이하게 만들 수 있다.  
+Custom Hook을 사용해야 하는 이유는 다음과 같이 정리가능하다.  
+- 함수를 통해 반복되는 로직을 사용해야 하는 경우
+- 일반적인 JS 함수에서 React Hook을 사용해야 하는 경우  
+- JSX 코드가 아닌 React Hook을 사용하여 어떤 Data를 return하고 싶은 경우
+
+## Custom Hook을 만들때의 주의점
+그러나 Custom Hook을 만들때의 주의사항이 몇개 존재한다.
+
 
 [url]: 2024-03-03-localstorageAndRendering.md

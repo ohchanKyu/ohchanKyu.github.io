@@ -294,8 +294,8 @@ export default useAuthFunction;
 use~라는 이름으로 시작하는 Component로 만들어 Custom Hook을 명시하고 JSX 코드를  
 return 하는 것이 아닌 JS 함수를 return하여 사용할 수 있도록 한다.  
 이를 통해 useContext라는 React Hook을 사용할 뿐만 아니라 반복되는 코드 없이  
-Custom Hook에서 return하는 함수를 통해 매개변수로 함수와 변수들을 모은 객체를  
-넘겨주어 REST API를 호출할 수 있도록 한다.  
+Custom Hook에서 return하는 함수를 통해 매개변수로 함수와 변수들을 모은 객체를 넘겨주어   
+REST API를 호출할 수 있도록 한다.  
 
 이처럼 Custom Hook을 만들어서 유지보수를 용이하게 만들 수 있다.  
 Custom Hook을 사용해야 하는 이유는 다음과 같이 정리가능하다.  
@@ -307,7 +307,7 @@ Custom Hook을 사용해야 하는 이유는 다음과 같이 정리가능하다
 그러나 Custom Hook을 만들때의 주의사항이 몇개 존재한다.  
 - React Project 디렉토리에서 src -> hooks 디렉토리를 생성하여 파일을 생성해야한다.  
 - Custom Hook의 파일명은 반드시 use로 시작해야 한다.  
-- 최상위 컴포넌트에서 Custom Hook을 호출헤야한다.  
+- 최상위 컴포넌트에서 Custom Hook을 호출해야한다.  
 - 분기문(if, for)에서 Hook을 호출해서는 안된다.  
 
 ~~~js
@@ -363,4 +363,8 @@ const useTest = (item) => {
     return fetchData;
 }
 ~~~
+
+이처럼 Custom Hook을 사용하기 위해서는 몇가지 규칙에 따라 작성해야 한다.  
+React 프로젝트를 진행하다보면 위의 상황처럼 Custom Hook이 필요할 수 있다.  
+따라서 필요한 상황들을 잘 기억하고 용도에 맞게 사용할 필요가 있다.  
 [url]: 2024-03-03-localstorageAndRendering.md

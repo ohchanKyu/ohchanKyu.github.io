@@ -116,7 +116,7 @@ return문에서 생성한 저장소 객체인 loginContext에서 Provider를 추
 생성한 context를 하위 컴포넌트에게 전달할 수 있도록 한다. 따라서 App.js를 다음과 같이 수정한다.  
 
 ~~~js
-// file : 'App.ks'
+// file: 'App.js'
 function App() {
 
   return (
@@ -146,7 +146,7 @@ Jwt인증을 구현하는 과정에서 백앤드 Spring boot와 통신할 때 �
 
 ## React에서의 상태 갱신
 ~~~js
-// file : 'ExampleComponent.js'
+// file: 'ExampleComponent.js'
 import React, { useState } from 'react';
 
 function ExampleComponent() {
@@ -165,6 +165,10 @@ function ExampleComponent() {
   );
 }
 ~~~
-useState를 사용하여 상태를 갱신할 때, 상태 갱신은 비동기적으로 이루어집니다. 따라서 함수가 끝나고 해당 상태 갱신이 언제 처리될지 정확히 예측할 수 없습니다. 상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리됩니다.
+useState를 사용하여 상태를 갱신할 때, 상태 갱신은 비동기적으로 이루어진다.  
+따라서 함수가 끝나고 해당 상태 갱신이 언제 처리될지 정확히 예측이 불가능하다.  
+상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리되는 것이다.  
+useState와 마찬가지로 useReducer도 동일한 상태 갱신의 알고리즘을 가진다.  
+
 ## Project에서의 해결법 (localStorage)
 

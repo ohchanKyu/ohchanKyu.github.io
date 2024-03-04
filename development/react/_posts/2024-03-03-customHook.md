@@ -53,7 +53,7 @@ const MainComponent = () => {
 그렇다면 위의 조건대로 함수형 컴포넌트에서 사용하면 되는것 아닌가?  
 Side Project를 진행하면서 함수형 컴포넌트 외에도 Hook을 사용해야 하는 경우를 접하게 되었다.  
 
-## Side Project에서의 사용 이유
+## Project에서의 사용 이유
 - Axios
 - Spring boot
 - React  
@@ -204,7 +204,7 @@ const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
 따라서 Custom Hook을 만들기로 결정하게 되었다.  
 
 
-## Side Project에서의 사용 예시
+## Project에서의 사용 예시
 
 ~~~js
 const useAuthFunction = () => {
@@ -301,10 +301,31 @@ Custom Hook에서 return하는 함수를 통해 매개변수로 함수와 변수
 Custom Hook을 사용해야 하는 이유는 다음과 같이 정리가능하다.  
 - 함수를 통해 반복되는 로직을 사용해야 하는 경우
 - 일반적인 JS 함수에서 React Hook을 사용해야 하는 경우  
-- JSX 코드가 아닌 React Hook을 사용하여 어떤 Data를 return하고 싶은 경우
+- JSX 코드가 아닌 React Hook을 사용하여 특정 Data를 return하고 싶은 경우
 
 ## Custom Hook을 만들때의 주의점
-그러나 Custom Hook을 만들때의 주의사항이 몇개 존재한다.
+그러나 Custom Hook을 만들때의 주의사항이 몇개 존재한다.  
+- React Project 디렉토리에서 src -> hooks 디렉토리를 생성하여 파일을 생성해야한다.  
+- Custom Hook의 파일명은 반드시 use로 시작해야 한다.  
+- 최상위 컴포넌트에서 Custom Hook을 호출헤야한다.  
+- 분기문(if, for)에서 Hook을 호출해서는 안된다.  
 
+분기문을 예로 들자면 일반적인 React 함수형 컴포넌트에서 사용하는 것과 동일하다.  
+~~~js
+const HookTestComponent = () => {
 
+    // useTest()
+    // Correct Example
+    const [number,setNumber] = useTest(0);
+}
+~~~
+
+~~~js
+const ErrorHookComponent = (props) => {
+
+    if (props.item){
+        const []
+    }
+}
+~~~
 [url]: 2024-03-03-localstorageAndRendering.md

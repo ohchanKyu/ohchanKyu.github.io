@@ -299,7 +299,31 @@ accessToken을 재발급 받도록 한다. 알고리즘을 요약하면 다음�
   데이터를 얻는다.  
 
 위의 절차를 보면 문제점이 없어보인다. 하지만 React의 렌더링 주기를 생각해볼때 문제점이 발생한다.  
-바로 example function처럼 하나의 함수에서 여러개의 REST API를 호출할 때 문제가 된다.  
+위의 코드에서 context의 값을 변경하고 테스트한 결과이다.  
+~~~js
+// file: 'customHook.js 일부'
+ try{
+        const functionResponse = await userFunction({
+            grantType : tryGrantType,
+            accessToken : tryAccessToken,
+            ...parameter
+        });
+        const demoString = "Test String"
+        loginCtx.editEmailUser(demoString);
+        console.log("Demo String : "+demoString);
+        console.log("Context : "+ loginCtx.email);
+        
+        const functionResponseData = await functionResponse.data;
+        return functionResponseData;
+
+    }catch(error){
+        ...code
+    }
+~~~
+Demo String을 하나 만들고 Test를 진행한다. console.log()로 찍은 결과는 다음과 같다.  
+- ![Full-image](/assets/img/useContext/error.png){:.lead width="200" height="100" loading="lazy"}
+
+위의 상황은 example function처럼 하나의 함수에서 여러개의 REST API를 호출할 때 문제가 된다.  
 상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리된다.  
 따라서 컴포넌트가 다시 렌더링 되기 전에 REST API를 호출하므로 useContext에는  
 재발급 받은 accessToken이 아닌 만료된 accessToken이 저장되어 있다.  
@@ -311,4 +335,5 @@ REST API를 호출하게 된다.
 해당 문제는 React 상태 갱신의 시스템으로 인한 알고리즘 오류로 상태를 통해  
 해결하는 것이 아닌 다른 방법이 필요하다.
 
-따라서 해당 Project에 localStorage를 이용하였다.
+- React Hook이 아닌 localStorage를 이용한다.  
+

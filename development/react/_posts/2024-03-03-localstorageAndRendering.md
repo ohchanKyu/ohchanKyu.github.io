@@ -170,5 +170,140 @@ useState를 사용하여 상태를 갱신할 때, 상태 갱신은 비동기적�
 상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리되는 것이다.  
 useState와 마찬가지로 useReducer도 동일한 상태 갱신의 알고리즘을 가진다.  
 
-## Project에서의 해결법 (localStorage)
+- Project에서의 코드는 다음과 같다.
+~~~js
+// file: 'example function'
+const exampleFunction =  async (address) => {
 
+        const localeResponseData = await functionHandler(getLocaleByAddress,{
+            address
+        });
+      
+        const cafeResponseData =  await functionHandler(getPlaceLocation,{
+            x : localeResponseData.x,
+            y : localeResponseData.y,
+            placeName : cafePlaceName,
+        }); 
+
+        const fetchDatas = await fetchplaceItemHandler({
+            placeDatas : cafeResponseData, 
+            originX : localeResponseData.x,
+            originY : localeResponseData.y,
+        })
+    }
+~~~
+- functionHandler는 Custom Hook으로 백앤드의 REST API를 호출한다.  
+- Custom Hook에서는 useContext의 데이터를 변경한다.  
+위의 코드를 보면 비동기적으로 REST API 호출을 하나의 함수에서 여러번 호출한다.  
+Custom Hook에서 useContext를 사용하여 데이터를 갱신하는데  
+위에서 설명한 것처럼 상태 갱신은 컴포넌트를 재랜더링할때 비동기적으로 처리된다.  
+따라서 첫번째 비동기 통신에서 useContext의 값을 변경하여도 두번째 비동기 통신에서 값이  
+변경되지 않는다. 이는 JWT 인증 방식에서 문제가 되었다.  
+
+## Project에서의 해결법 (localStorage)
+~~~js
+// file: 'customHook.js'
+const useAuthFunction = () => {
+
+    const tokenCtx = useContext(authContext);
+    const loginCtx = useContext(loginContext);
+    const navigate = useNavigate();
+
+    const authFunctionHandler = async (userFunction, parameter) => {
+        
+        const tryGrantType = tokenCtx.grantType;
+        const tryAccessToken = localStorage.getItem("accessToken");
+        const tryRefreshToken = tokenCtx.refreshToken;
+        const tryAccessTokenExpiresIn = tokenCtx.accessTokenExpiresIn;
+
+        try{
+
+            const functionResponse = await userFunction({
+                grantType : tryGrantType,
+                accessToken : tryAccessToken,
+                ...parameter
+            });
+            const functionResponseData = await functionResponse.data;
+            return functionResponseData;
+
+        }catch(error){
+            
+            if (error.response.status === 401){
+
+                try {
+                    const token = {
+                        grantType : tryGrantType,
+                        accessToken : tryAccessToken,
+                        accessTokenExpiresIn : tryAccessTokenExpiresIn,
+                        refreshToken : tryRefreshToken
+                    };
+    
+                    const refreshTokenResponse = await refreshTokenProcess(token);
+                    const refreshTokenResponseData = await refreshTokenResponse.data;
+    
+                    const { 
+                        accessToken : newAccessToken,  
+                        grantType : newGrantType, 
+                        accessTokenExpiresIn : newaccessTokenExpiresIn, 
+                        refreshToken : newRefreshToken 
+                    } = refreshTokenResponseData;
+    
+                    localStorage.setItem("accessToken",newAccessToken);
+                    tokenCtx.setUserToken(newGrantType,newAccessToken,newRefreshToken,newaccessTokenExpiresIn); 
+    
+                    const newRefreshFunctionResponse = await userFunction({
+                        grantType : newGrantType,
+                        accessToken : newAccessToken,
+                        ...parameter
+                    });
+    
+                    const newRefreshFunctionResponseData = await newRefreshFunctionResponse.data;
+                    return newRefreshFunctionResponseData;
+                }catch(error){
+                    if (error.response.status === 401 || error.response.status === 403){
+                        Swal.fire({
+                            icon: 'warning',                        
+                            title: '세션 만료',         
+                            html: `세션이 만료되었습니다.<br> 다시 로그인 해주세요.`
+                        });
+                        loginCtx.logoutUser();
+                        tokenCtx.removeUserToken();
+                        localStorage.removeItem("accessToken");
+                        navigate('/');
+                    }
+                }
+                
+            }
+        } 
+    };
+    return authFunctionHandler;
+};
+
+export default useAuthFunction;
+~~~
+위의 코드가 Custom Hook을 제작한 것으로 JWT 인증을 위해 Header Authorization을  
+추가하고 REST API를 호출하는 것이다. 기존의 useContext에 저장되어있던 accessToken을  
+사용하여 인증을 시도하고, 만약 만료되었다면 RefreshToken을 통해 인증 허가를 받고  
+accessToken을 재발급 받도록 한다. 알고리즘을 요약하면 다음과 같다. 
+
+- 기존의 useContext Hook을 사용해 accessToken을 가져온다.  
+- 이를 통해 Header 권한 설정 후 REST API를 호출한다.  
+- 만약 accessToken이 만료되었다면 useContext에 있는 refreshToken을 통해  
+  새로운 토큰을 재발급받는다.
+- 새로운 토큰을 useContext에 저장하고 원래 요청하였던 REST API를 재호출하여
+  데이터를 얻는다.  
+
+위의 절차를 보면 문제점이 없어보인다. 하지만 React의 렌더링 주기를 생각해볼때 문제점이 발생한다.  
+바로 example function처럼 하나의 함수에서 여러개의 REST API를 호출할 때 문제가 된다.  
+상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리된다.  
+따라서 컴포넌트가 다시 렌더링 되기 전에 REST API를 호출하므로 useContext에는  
+재발급 받은 accessToken이 아닌 만료된 accessToken이 저장되어 있다.  
+따라서 알고리즘의 흐름대로 인증이 이루어지는 것이 아닌 게속 만료된 accessToken으로  
+REST API를 호출하게 된다.  
+ 
+그렇다면 이를 해결할 수 있는 방법은 무엇일까?
+- React Hook으로는 해결이 불가능하다.
+해당 문제는 React 상태 갱신의 시스템으로 인한 알고리즘 오류로 상태를 통해  
+해결하는 것이 아닌 다른 방법이 필요하다.
+
+따라서 해당 Project에 localStorage를 이용하였다.

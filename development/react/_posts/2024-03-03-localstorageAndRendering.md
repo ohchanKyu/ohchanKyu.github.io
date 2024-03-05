@@ -165,9 +165,14 @@ function ExampleComponent() {
   );
 }
 ~~~
+- ![Full-image](/assets/img/useContext/state_update2.png){:.lead width="200" height="100" loading="lazy"}
+- ![Full-image](/assets/img/useContext/state_update.png){:.lead width="200" height="100" loading="lazy"}
+위의 사진은 ExampleComponent.js 파일을 실제 구현하였을때 나타나는 현상이다.  
+
 useState를 사용하여 상태를 갱신할 때, 상태 갱신은 비동기적으로 이루어진다.  
 따라서 함수가 끝나고 해당 상태 갱신이 언제 처리될지 정확히 예측이 불가능하다.  
 상태 갱신은 리액트가 컴포넌트를 다시 렌더링할 때 비동기적으로 처리되는 것이다.  
+위의 결과처럼 console에 찍히는 값과 실제 렌더링 후에 나타는 값이 차이가 나는 것을 볼 수 있다.  
 useState와 마찬가지로 useReducer도 동일한 상태 갱신의 알고리즘을 가진다.  
 
 - Project에서의 코드는 다음과 같다.
@@ -200,7 +205,7 @@ Custom Hook에서 useContext를 사용하여 데이터를 갱신하는데
 따라서 첫번째 비동기 통신에서 useContext의 값을 변경하여도 두번째 비동기 통신에서 값이  
 변경되지 않는다. 이는 JWT 인증 방식에서 문제가 되었다.  
 
-## Project에서의 해결법 (localStorage)
+## Project에서의 해결법 - localStorage
 ~~~js
 // file: 'customHook.js'
 const useAuthFunction = () => {

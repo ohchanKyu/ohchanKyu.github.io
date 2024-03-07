@@ -345,7 +345,9 @@ REST API를 호출하게 된다.
 존재할 수 있다. 이럴때 사용하는 것이 localStorage와 sessionStorage이다.  
 이 둘을 묶어 Web Storage라고 부른다. 위의 JWT 인증 같은 경우가 Web Storage를  
 이용해야 하는 경우이다. 물론 useContext를 통해 Token 관리를 진행하였지만  
-렌더링 문제로 Web Storage를 이용하게 되었다.  
+렌더링 문제로 Web Storage를 이용하게 되었다. Web Storage는 React의 렌더링 주기와  
+상관없이 브라우저에 데이터가 저장되므로 바로 key와 value값으로 갱신된 값을  
+저장하고 가져올 수 있다.  
 
 ### local Storage vs Session Storage  
 그렇다면 local Storage와 Session Storage의 차이는 무엇일까?  

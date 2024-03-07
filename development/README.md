@@ -38,7 +38,7 @@ Api Key 발급 등 설정 및 요청과 응답 예제이다.
 * [TMap]{:.heading.flip-title} --- TMap API 사용법 및 예제 
 * [Movie-Api]{:.heading.flip-title} --- 영화데이터를 가져오기 위한 API
 
-[Spring]: spring.md
+[Spring]: ./spring.md
 [Authentication]: authentication.md
 [React]: react.md
 [Config]: aws.md

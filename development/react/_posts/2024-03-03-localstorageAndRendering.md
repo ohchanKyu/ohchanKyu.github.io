@@ -299,7 +299,8 @@ accessToken을 재발급 받도록 한다. 알고리즘을 요약하면 다음�
   데이터를 얻는다.  
 
 위의 절차를 보면 문제점이 없어보인다. 하지만 React의 렌더링 주기를 생각해볼때 문제점이 발생한다.  
-위의 코드에서 context의 값을 변경하고 테스트한 결과이다.  
+위의 코드에서 context의 값을 변경하고 테스트한 결과이다.
+
 ~~~js
 // file: 'customHook.js 일부'
  try{
@@ -336,4 +337,17 @@ REST API를 호출하게 된다.
 해결하는 것이 아닌 다른 방법이 필요하다.
 
 - React Hook이 아닌 localStorage를 이용한다.  
+
+## localStorage는 무엇일까?
+웹 애플리케이션을 개발하다보면 데이터를 어딘가에는 저장해야한다.  
+따라서 대부분 서버(DB)나 클라우드 플랫폼을 통해 데이터를 저장한다.  
+하지만 중요한 데이터가 아니거나 혹은 Client 측에서만 저장해야 하는 데이터만  
+존재할 수 있다. 이럴때 사용하는 것이 localStorage와 sessionStorage이다.  
+이 둘을 묶어 Web Storage라고 부른다. 위의 JWT 인증 같은 경우가 Web Storage를  
+이용해야 하는 경우이다. 물론 useContext를 통해 Token 관리를 진행하였지만  
+렌더링 문제로 Web Storage를 이용하게 되었다.  
+
+### local Storage vs Session Storage  
+그렇다면 local Storage와 Session Storage의 차이는 무엇일까?  
+
 

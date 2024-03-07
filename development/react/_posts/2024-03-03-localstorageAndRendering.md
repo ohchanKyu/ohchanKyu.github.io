@@ -338,7 +338,7 @@ REST API를 호출하게 된다.
 
 - React Hook이 아닌 localStorage를 이용한다.  
 
-## localStorage는 무엇일까?
+## WebStorage 무엇일까?
 웹 애플리케이션을 개발하다보면 데이터를 어딘가에는 저장해야한다.  
 따라서 대부분 서버(DB)나 클라우드 플랫폼을 통해 데이터를 저장한다.  
 하지만 중요한 데이터가 아니거나 혹은 Client 측에서만 저장해야 하는 데이터만  
@@ -349,7 +349,8 @@ REST API를 호출하게 된다.
 상관없이 브라우저에 데이터가 저장되므로 바로 key와 value값으로 갱신된 값을  
 저장하고 가져올 수 있다.  
 
-### local Storage vs Session Storage  
+### local Storage vs session Storage  
 그렇다면 local Storage와 Session Storage의 차이는 무엇일까?  
+- 이 둘의 차이는 데이터의 저장 범위와 보존 기간의 차이이다.
 
 

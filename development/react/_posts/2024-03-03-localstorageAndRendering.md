@@ -383,4 +383,4 @@ localStorage를 사용하는 것이 사용자 경험의 개선면에서 유리�
 변경하거나 다른 대안방안을 고려하여 사용할 필요가 있다.  
 
 - JWT 개념 및 구현 방법 [What is JWT?][url]
-[url]: ../../authentication/2024-03-07-jwt.md
+[url]: ../../authentication/_posts/2024-03-07-jwt.md

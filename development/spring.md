@@ -1,21 +1,15 @@
 ---
-# Featured tags need to have either the `list` or `grid` layout (PRO only).
-layout: list
-
-# The title of the tag's page.
-title: Spring boot
-
-# The name of the tag, used in a post's front matter (e.g. tags: [<slug>]).
-slug: spring
-  
-# (Optional) You can disable grouping posts by date.
-# no_groups: true
-
-# Exclude this example category from the sitemap.
-# DON'T USE THIS SETTING IN YOUR CATEGORIES!
+layout: page
+title: Spring
+description: >
+  Spring development and technical Issue
+hide_description: true
 sitemap: false
+permalink: /development/
 ---
 
-- Spring Boot Framework의 사용 및 여러 가지 에러 해결
+- Spring Framework의 사용 및 여러 가지 에러 해결
 - Spring Boot를 통한 SSR 개발
 - Spring Boot + React를 통한 SPA / CSR 개발
+
+- [Spring]

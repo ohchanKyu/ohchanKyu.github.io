@@ -17,7 +17,7 @@ While this manual tries to be beginner-friendly, as a user of Jekyll it is assum
 
 
 ## Using Development Framework
-* [Spring-boot]{:.heading.flip-title} --- Spring boot 개발과정 및 시행 착오
+* [Spring]{:.heading.flip-title} --- Spring Framework 개발과정 및 시행 착오
 * [Authentication]{:.heading.flip-title} --- Session & Jwt 인증의 차이점 및 장단점 정리
 * [React]{:.heading.flip-title} --- React Framework 개발 과정 및 시행 착오
 * [Flask]{:.heading.flip-title} --- Python Flask를 통한 Web 개발
@@ -38,7 +38,7 @@ Api Key 발급 등 설정 및 요청과 응답 예제이다.
 * [TMap]{:.heading.flip-title} --- TMap API 사용법 및 예제 
 * [Movie-Api]{:.heading.flip-title} --- 영화데이터를 가져오기 위한 API
 
-[Spring-boot]: spring.md
+[Spring]: spring.md
 [Authentication]: authentication.md
 [React]: react.md
 [Config]: aws.md

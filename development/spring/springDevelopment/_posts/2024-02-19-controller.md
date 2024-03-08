@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "Controller"
+title:  "[Spring] Controller"
 date:   2024-02-20 01:38:04 +0900
 
 ---

@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "Spring boot + React"
+title:  "[Spring] Spring boot + React"
 date:   2024-02-25 01:38:04 +0900
 
 ---

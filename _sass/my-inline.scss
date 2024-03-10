@@ -9,6 +9,7 @@
 .post p, .post li {
     font-size:14px;
     font-weight: bold;
+    word-break: keep-all;
 }
 
 .post strong {

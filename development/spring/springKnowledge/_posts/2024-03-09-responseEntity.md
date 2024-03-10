@@ -80,6 +80,16 @@ public class MemberRestController {
 - ![Full-image](/assets/img/responseEntity/responseBody.png){:.lead width="300" height="100" loading="lazy"}
 - ![Full-image](/assets/img/responseEntity/restController.png){:.lead width="300" height="100" loading="lazy"}
 
+해당 코드는 @Controller + @ResponseBody와 @RestController를 통해 Java Object를 return해준다.  
+PostMan으로 테스트 하였을 때 각 데이터인 Java String 객체가 return된다.  
+위에서 설명한 것처럼 @ResponseBody를 이용할 경우 Spring은 Http 응답에  
+응답 상태코드는 200, Header에 대한 정보는 기본적으로 5가지의 정보를 담아서 return해준다.  
+
+즉 @ResponseBody + @Controller와  @RestController로 테스트한 결과를 정리하면 다음과 같다.  
+
+- Status - 응답을 성공적으로 반환한다면 200
+- Header - 5가지
+- Body - Java Object
 
 ~~~java
 @ResponseBody
@@ -90,8 +100,17 @@ public String responseBodyStatusTestMethod(){
 }
 ~~~
 - ![Full-image](/assets/img/responseEntity/ResponseStatus.png){:.lead width="300" height="100" loading="lazy"}
-헤더의 문제점
+물론 @ResponseBody를 이용해서 응답 상태코드는 변환이 가능하다.  
+위의 코드처럼 @ResponseStatus()를 이용하여 HttpStatus 객체를 통해 원하는 응답 상태코드를 설정할 수 있다.  
+여기서는 ACCEPTED로 설정하여 아래에 응답이 200이 아닌 202로 설정된 것을 볼 수 있다.  
+
+이처럼 상태코드 변환은 가능하지만 단점으로는 HTTP 규약 중  
+하나인 **Header에 대해서는 유동적으로 설정하기 어렵다**는 것이다. 따라서 ResponseEntity를 사용한다.  
 
 ## ResponseEntity
-
+ResponseEntity는 HTTP 응답을 빠르게 만들어주기 위한 객체이다.  
+@ResponseBody는 어노테이션을 통해 해당 메소드가 view가 아닌 데이터를 return하지만,  
+ResponseEntity는 객체로 사용된다. 즉 응답으로 보낼 Header,Status,Body를 모두 담은 요소를  
+ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Status 응답 코드와 Header를 보다  
+유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
 ## ResponseEntity 사용 이유

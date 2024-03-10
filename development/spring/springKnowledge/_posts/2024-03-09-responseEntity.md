@@ -12,7 +12,7 @@ date:   2024-03-07 01:38:04 +0900
 
 ## Restful API의 등장
 **Restful API**란 무엇일까?  
-<span  style="background-color:#fff5b1">두 컴퓨터 시스템이 인터넷을 통해 정보를 안전하게 교환하기 위해 사용하는 인터페이스</span>
+<span  style="background-color:#fff5b1">두 컴퓨터 시스템이 인터넷을 통해 정보를 안전하게 교환하기 위해 사용하는 인터페이스</span>  
 AWS에 나와있는 정의를 살펴보면 다음과 같이 정의된다. 즉 서로 다른 시스템에서 정보를 교환하고,  
 데이터 통신을 지향하기 위한 규약이라고 말할 수 있다. 쉽게 말하면 ServiceA라는 시스템에서 어떠한 데이터를  
 다른 ServiceB라는 시스템에게 전달하고자 할 때 어떠한 형태로 데이터를 보내줄지에 대한 규약이다.  
@@ -80,6 +80,17 @@ public class MemberRestController {
 - ![Full-image](/assets/img/responseEntity/responseBody.png){:.lead width="300" height="100" loading="lazy"}
 - ![Full-image](/assets/img/responseEntity/restController.png){:.lead width="300" height="100" loading="lazy"}
 
+
+~~~java
+@ResponseBody
+@ResponseStatus(HttpStatus.ACCEPTED)
+@RequestMapping("/status/member")
+public String responseBodyStatusTestMethod(){
+    return "ResponseBody Status Test!";
+}
+~~~
+- ![Full-image](/assets/img/responseEntity/ResponseStatus.png){:.lead width="300" height="100" loading="lazy"}
+헤더의 문제점
 
 ## ResponseEntity
 

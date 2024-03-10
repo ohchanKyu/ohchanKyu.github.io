@@ -1,10 +1,21 @@
 ---
 
 layout: post
-title:  "[Spring] <br/> REST API에서의 ReponseEntity 사용 이유"
+title:  "[Spring] REST API에서의 ReponseEntity 사용 이유"
 date:   2024-03-07 01:38:04 +0900
 
 ---
 
 0. this unordered seed list will be replaced by toc as unordered list
 {:toc}
+
+
+## Restful API의 등장
+
+## Http Response
+
+## @Controller + @ResponseBody / @RestController
+
+## ResponseEntity
+
+## ResponseEntity 사용 이유

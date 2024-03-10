@@ -6,7 +6,11 @@
 .post-title, .post h2 {
     color:#37a9b3;
 }
-.post p {
+.post p, .post li {
     font-size:14px;
     font-weight: bold;
+}
+
+.post strong {
+    color:red;
 }

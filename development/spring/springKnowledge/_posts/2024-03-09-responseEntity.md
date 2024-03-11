@@ -39,11 +39,12 @@ Response Status (참고 자료)
 
 ### Header
 Header는 응답으로 부가적인 정보를 전송할 수 있도록 해준다.    
-Header에는 주로 인증과 캐싱에 대한 정보를 담으며, 전송할 데이터(JSON,XML)과 함께 요구사항 정보를  
-추가해야 한다면 Header에 정보를 담아서 전송할 수 있도록 한다.  
+Header에는 주로 인증과 캐싱에 대한 정보를 담으며, 전송할 데이터(JSON,XML)과 함께  
+요구사항 정보를 추가해야 한다면 Header에 정보를 담아서 전송할 수 있도록 한다.  
 
 ### Body
-Body부분이 Client측으로 전송할 데이터이다. JSON, XML, HTML등의 데이터를 포함한다.  
+Body부분이 Client측으로 전송할 데이터이다.  
+JSON, XML, HTML등의 데이터를 포함한다.  
 
 ## Controller / RestController
 Controller에서도 Client측으로 데이터 전송이 가능하다.  
@@ -89,11 +90,11 @@ PostMan으로 테스트 하였을 때 각 데이터인 Java String 객체가 ret
 위에서 설명한 것처럼 @ResponseBody를 이용할 경우  
 Spring은 Http 응답에 응답 상태코드는 200, Header에 대한 정보는 5가지의 정보를 담아서 return해준다.  
 
-즉 @ResponseBody + @Controller와  @RestController로 테스트한 결과를 정리하면 다음과 같다.  
+@ResponseBody + @Controller와  @RestController로 테스트한 결과를 정리하면 다음과 같다.  
 
-- Status - 응답을 성공적으로 반환한다면 200
-- Header - 5개의 정보
-- Body - Java Object
+- **Status** - 응답을 성공적으로 반환한다면 200
+- **Header** - 5개의 정보
+- **Body** - Java Object
 
 ### @ResponseStatus
 ~~~java
@@ -180,7 +181,7 @@ ResponseEntity 객체를 정리하면 다음과 같다.
 @ResponseBody를 이용하였을 때와 동일하지만 <span style="background-color:#fff5b1">ResponseEntity는 좀 더 유동적이라는 장점이 있다. </span>
 @ResponseBody를 이용할 경우 상태코드를 변경하기 위해서는 @ResponseStatus를 이용해야하고,  
 Header를 변경하기 위해서는 추가적인 로직이 필요하다. 즉 유연하지 못하다.  
-하지만 <span style="background-color:#fff5b1">ResponseEntity 객체를 이용하면 Builder 패턴을 이용하여 쉽게 응답 상태코드와 Header 정보를 변경할 수 있다.</span>
+<span style="background-color:#fff5b1">ResponseEntity 객체를 이용하면 Builder 패턴을 이용하여 쉽게 응답 상태코드와 Header 정보를 변경할 수 있다.</span>
 
 ### Builder 패턴의 사용 이유
 ~~~java
@@ -247,6 +248,6 @@ ResponseEntity의 사용 이유를 살펴보면 다음과 같다.
 - <span style="background-color:#fff5b1">여러 종류의 Http 응답을 제공가능하다.(JSON, XML, HTML)</span>
 - <span style="background-color:#fff5b1">Restful API 규격에 맞는 API를 제공할 수 있다.</span>
 
-Restful API의 필요성과 사용량이 늘어나면서 해당 데이터를 제공할 때, 규약에 맞게 제공할 필요가 있다. 
+Restful API의 필요성과 사용량이 늘어나면서 해당 데이터를 제공할 때, 규약에 맞게 제공할 필요가 있다.   
 이에 따라 ResponseEntity 객체를 이용하여, Http 응답을 유연하게 생성할 수 있다는 것이 가장 큰 장점이다.  
 따라서 ResponseEntity를 사용할 때 적절한 응답코드와 헤더를 설정하는 것이 중요하다.  

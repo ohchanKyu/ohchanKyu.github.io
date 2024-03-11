@@ -2,7 +2,7 @@
 
 layout: post
 title:  "[Spring] Restful API 등장과 ReponseEntity"
-date:   2024-03-07 01:38:04 +0900
+date:   2024-03-10 01:38:04 +0900
 
 ---
 

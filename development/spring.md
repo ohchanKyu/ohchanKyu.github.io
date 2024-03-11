@@ -12,14 +12,12 @@ sitemap: false
 - Spring Boot + React를 통한 SPA / CSR 개발
 
 ## Posts
-
 ## [Spring-Development]
 
 Spring boot 개발 및 Tip 정리   
 
 
 ## [Spring-Knowledge]
-
 Spring 개발 과정에서의 이슈 및 관점 정리  
 
 

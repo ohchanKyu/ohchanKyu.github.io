@@ -120,7 +120,7 @@ ResponseEntity는 객체로 사용된다. 즉 응답으로 보낼 Header, Status
 ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Status 응답 코드와 Header를 보다  
 유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
 
-- ResponseEntity.ok()
+- ResponseEntity.ok()  
 ~~~java
 @GetMapping("/rest/member")
 public ResponseEntity<String> responseEntityMethodTest(){
@@ -140,7 +140,7 @@ public ResponseEntity<String> responseEntityMethodTest(){
 또한 위의 2개의 코드는 모두 같은 결과를 return하며, header 혹은 응답 상태코드를 변경할 일이 없다면,  
 두번째와 같이 코드를 작성하여도 된다.  
 
-- Status 변경
+- Status 변경  
 ~~~java
 @GetMapping("/rest/status/member")
 public ResponseEntity<String> responseEntityStatusTest(){
@@ -152,7 +152,7 @@ public ResponseEntity<String> responseEntityStatusTest(){
 만약 응답 상태코드를 변경하고 싶다면 builder 패턴을 이용하므로 ResponseEntity 객체의  
 status를 호출하여 HttpStatus 객체를 이용하여 응답코드를 변경할 수 있다.  
 
-- Header 추가
+- Header 추가  
 ~~~java
 @GetMapping("/rest/header/member")
 public ResponseEntity<String> responseEntityHeaderTest(){
@@ -183,8 +183,59 @@ Header를 변경하기 위해서는 추가적인 로직이 필요하다. 즉 유
 변경할 수 있다.  
 
 ### Builder 패턴의 사용 이유
+~~~java
+public class ResponseEntity<T> extends HttpEntity<T> {
+    private final Object status;
+
+    public ResponseEntity(HttpStatusCode status) {
+        this((Object)null, (MultiValueMap)null, (HttpStatusCode)status);
+    }
+
+    public ResponseEntity(@Nullable T body, HttpStatusCode status) {
+        this(body, (MultiValueMap)null, (HttpStatusCode)status);
+    }
+
+    public ResponseEntity(MultiValueMap<String, String> headers, HttpStatusCode status) {
+        this((Object)null, headers, (HttpStatusCode)status);
+    }
+
+    public ResponseEntity(@Nullable T body, @Nullable MultiValueMap<String, String> headers, HttpStatusCode status) {
+        this(body, headers, (Object)status);
+    }
+
+    public ResponseEntity(@Nullable T body, @Nullable MultiValueMap<String, String> headers, int rawStatus) {
+        this(body, headers, (Object)rawStatus);
+    }
+~~~
+
+ResponseEntity의 생성자를 보면 다음과 같다. 여러개의 생성자를 가지고 있어서,  
+Status, Header, Body를 추가로 설정할 필요 없을때 null로 전달하여도 상관 없다.  
+하지만 생성자를 이용하였을때의 return 구문을 보면 다음과 같다.  
+
+~~~java
+@GetMapping("/rest/constructor/member")
+public ResponseEntity<String> responseEntityConstructorTest(){
+    return new ResponseEntity<String>("Constructor Test", HttpStatus.valueOf(200));
+}
+~~~
+
+위의 코드처럼 응답 상태코드 전달 시 응답코드를 하드코딩으로 해야되기 때문에,  
+Builder Pattern을 권장하는 것이다.  
 
 ### 와일드카드
+이는 어려운 게념이 아닌 제네릭 타입을 사용하겠다는 것이다.  
+즉 제네릭 타입으로 타입을 명시하지 않고, 런타임까지 유연하게 ResponseEntity 객체를 이용하겠다는 것이다.  
+
+~~~java
+@GetMapping("/rest/generic/member")
+public ResponseEntity<?> responseEntityGenericTest(){
+    return ResponseEntity.ok("Generic Test");
+}
+~~~
+
+하지만 이와 같은 방법은 권장되지 않는다.  
+와일드카드는 객체 지향 개념에 적합하지 않고 가독성까지 떨어진다는 단점을 보유하고 있다.  
+따라서 객체 타입이 명확하지 않은 경우 제네릭 타입보다는 Object 타입을 사용하는 것이 좋다.  
 
 ## ResponseEntity 사용 이유
 

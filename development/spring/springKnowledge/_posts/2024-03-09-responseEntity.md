@@ -169,5 +169,23 @@ key와 value 값을 설정해줄 수 있다. 그 후 위와 마찬가지로 buil
 ResponseEntity 객체의 headers를 호출하여 HttpHeaders 객체를 전달해준다.  
 위의 사진을 보면 Header에 Type : HeaderTest 이렇게 key와 value값으로 추가된 것을 볼 수 있다.  
 
+
+ResponseEntity 객체를 테스트 하였을때를 정리하면 다음과 같다.  
+
+- Status - 응답을 성공적으로 반환한다면 200
+- Header - 5개의 정보
+- Body - Java Object
+
+@ResponseBody를 이용하였을 때와 동일하지만 ResponseEntity는 좀 더 유동적이라는 장점이 있다.  
+@ResponseBody를 이용할 경우 상태코드를 변경하기 위해서는 @ResponseStatus를 이용해야하고,  
+Header를 변경하기 위해서는 추가적인 로직이 필요하다. 즉 유연하지 못하다.  
+하지만 ResponseEntity 객체를 이용하면 Builder 패턴을 이용하여 쉽게 응답 상태코드와 Header 정보를  
+변경할 수 있다.  
+
+### Builder 패턴의 사용 이유
+
+### 와일드카드
+
 ## ResponseEntity 사용 이유
 
+ResponseEntity의 사용 이유를 살펴보면 다음과 같다.  

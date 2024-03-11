@@ -57,6 +57,7 @@ view(화면)을 return하기 때문에 **@ResponseBody**를 추가하여야 view
 
 즉 **@RestController와 @Controller + 모든 메소드의 @ResponseBody**는 같은 것이다.  
 
+**@Controller + @ResponseBody**
 ~~~java
 @Controller
 public class MemberController {
@@ -67,7 +68,11 @@ public class MemberController {
         return "ResponseBody Test!";
     }
 }
+~~~
+- ![Full-image](/assets/img/responseEntity/responseBody.png){:.lead width="300" height="100" loading="lazy"}
 
+**@RestController**
+~~~java
 @RestController
 public class MemberRestController {
 
@@ -77,7 +82,6 @@ public class MemberRestController {
       }
 }
 ~~~
-- ![Full-image](/assets/img/responseEntity/responseBody.png){:.lead width="300" height="100" loading="lazy"}
 - ![Full-image](/assets/img/responseEntity/restController.png){:.lead width="300" height="100" loading="lazy"}
 
 해당 코드는 @Controller + @ResponseBody와 @RestController를 통해 Java Object를 return해준다.  
@@ -99,6 +103,7 @@ public String responseBodyStatusTestMethod(){
     return "ResponseBody Status Test!";
 }
 ~~~
+
 - ![Full-image](/assets/img/responseEntity/ResponseStatus.png){:.lead width="300" height="100" loading="lazy"}
 물론 @ResponseBody를 이용해서 응답 상태코드는 변환이 가능하다.  
 위의 코드처럼 @ResponseStatus()를 이용하여 HttpStatus 객체를 통해 원하는 응답 상태코드를 설정할 수 있다.  
@@ -110,7 +115,9 @@ public String responseBodyStatusTestMethod(){
 ## ResponseEntity
 ResponseEntity는 HTTP 응답을 빠르게 만들어주기 위한 객체이다.  
 @ResponseBody는 어노테이션을 통해 해당 메소드가 view가 아닌 데이터를 return하지만,  
-ResponseEntity는 객체로 사용된다. 즉 응답으로 보낼 Header,Status,Body를 모두 담은 요소를  
+ResponseEntity는 객체로 사용된다. 즉 응답으로 보낼 Header, Status, Body를 모두 담은 요소를  
 ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Status 응답 코드와 Header를 보다  
 유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
+
 ## ResponseEntity 사용 이유
+

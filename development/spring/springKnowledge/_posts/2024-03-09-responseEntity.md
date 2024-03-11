@@ -38,26 +38,26 @@ Response Status (참고 자료)
 - 5xx : 서버쪽 오류로 인한 상태 코드  
 
 ### Headers
-Headers는 응답으로 부가적인 정보를 전송할 수 있도록 해줍니다.  
+Headers는 응답으로 부가적인 정보를 전송할 수 있도록 해준다.    
 Header에는 주로 인증과 캐싱에 대한 정보를 담으며, 전송할 데이터(JSON,XML)과 함께 요구사항 정보를  
 추가해야 한다면 Headers에 정보를 담아서 전송할 수 있도록 한다.  
 
 ### Body
 Body부분이 Client측으로 전송할 데이터이다. JSON, XML, HTML등의 데이터를 포함한다.  
 
-## @Controller + @ResponseBody / @RestController
+## Controller / RestController
 Controller에서도 Client측으로 데이터 전송이 가능하다. 단 일반적인 @Controller 어노테이션은  
 view(화면)을 return하기 때문에 **@ResponseBody**를 추가하여야 view를 return하는 것이 아닌  
 직접 데이터를 return한다. @ResponseBody를 이용할 경우 Spring은 HTTP 응답에 return하는 데이터 값을  
 자동으로 변경해준다. 따라서 Controller Class에서 각 메소드에 @ResponseBody를 붙여주면  
 데이터를 전송하는 API를 만들 수 있다.  
 
-**Spring4.0**에서는 **@RestController** 어노테이션을 선언해주면서 컨트롤러 클래스의 각 메서드마다  
+**Spring4.0**부터는 **@RestController** 어노테이션을 선언해주면서 컨트롤러 클래스의 각 메서드마다  
 @ResponseBody를 추가할 필요가 없어졌고, 모든 메서드는 @ResponseBody 애노테이션이 기본으로 작동이 된다.  
 
 즉 **@RestController와 @Controller + 모든 메소드의 @ResponseBody**는 같은 것이다.  
 
-**@Controller + @ResponseBody**
+### @Controller + @ResponseBody
 ~~~java
 @Controller
 public class MemberController {
@@ -71,7 +71,7 @@ public class MemberController {
 ~~~
 - ![Full-image](/assets/img/responseEntity/responseBody.png){:.lead width="300" height="100" loading="lazy"}
 
-**@RestController**
+### @RestController
 ~~~java
 @RestController
 public class MemberRestController {
@@ -92,9 +92,10 @@ PostMan으로 테스트 하였을 때 각 데이터인 Java String 객체가 ret
 즉 @ResponseBody + @Controller와  @RestController로 테스트한 결과를 정리하면 다음과 같다.  
 
 - Status - 응답을 성공적으로 반환한다면 200
-- Header - 5가지
+- Header - 5개의 정보
 - Body - Java Object
 
+### @ResponseStatus
 ~~~java
 @ResponseBody
 @ResponseStatus(HttpStatus.ACCEPTED)
@@ -120,10 +121,53 @@ ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Stat
 유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
 
 - ResponseEntity.ok()
+~~~java
+@GetMapping("/rest/member")
+public ResponseEntity<String> responseEntityMethodTest(){
+    return ResponseEntity.ok().body("ResponseEntity Test!");
+}
+
+@GetMapping("/rest/member")
+public ResponseEntity<String> responseEntityMethodTest(){
+    return ResponseEntity.ok("ResponseEntity Test!");
+}
+~~~
+- ![Full-image](/assets/img/responseEntity/responseEntity.png){:.lead width="300" height="100" loading="lazy"}
+- ![Full-image](/assets/img/responseEntity/responseEntityBasicHeader.png){:.lead width="300" height="100" loading="lazy"}
+
+위의 코드는 ResponseEntity 객체를 생성하여 Http 응답을 반환하는 코드이다.  
+코드를 Test해보면 응답 상태코드는 200, Header 정보는 5가지로 되어있는 것을 볼 수 있다.  
+또한 위의 2개의 코드는 모두 같은 결과를 return하며, header 혹은 응답 상태코드를 변경할 일이 없다면,  
+두번째와 같이 코드를 작성하여도 된다.  
 
 - Status 변경
+~~~java
+@GetMapping("/rest/status/member")
+public ResponseEntity<String> responseEntityStatusTest(){
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Status Test!");
+}
+~~~
+- ![Full-image](/assets/img/responseEntity/responseEntityStatus.png){:.lead width="300" height="100" loading="lazy"}
+
+만약 응답 상태코드를 변경하고 싶다면 builder 패턴을 이용하므로 ResponseEntity 객체의  
+status를 호출하여 HttpStatus 객체를 이용하여 응답코드를 변경할 수 있다.  
 
 - Header 추가
+~~~java
+@GetMapping("/rest/header/member")
+public ResponseEntity<String> responseEntityHeaderTest(){
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Type", "Header Test");
+    return ResponseEntity.ok().headers(headers).body("Header Test!");
+}
+~~~
+- ![Full-image](/assets/img/responseEntity/responseEntityHeader.png){:.lead width="300" height="100" loading="lazy"}
+- ![Full-image](/assets/img/responseEntity/responseEntityModifyHeader.png){:.lead width="300" height="100" loading="lazy"}
+
+만약 Header를 변경하고 싶다면 HttpHeaders 객체를 생성한 후 set() 메소드를 통해  
+key와 value 값을 설정해줄 수 있다. 그 후 위와 마찬가지로 builder 패턴을 이용하므로,  
+ResponseEntity 객체의 headers를 호출하여 HttpHeaders 객체를 전달해준다.  
+위의 사진을 보면 Header에 Type : HeaderTest 이렇게 key와 value값으로 추가된 것을 볼 수 있다.  
 
 ## ResponseEntity 사용 이유
 

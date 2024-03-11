@@ -113,11 +113,17 @@ public String responseBodyStatusTestMethod(){
 하나인 **Header에 대해서는 유동적으로 설정하기 어렵다**는 것이다. 따라서 ResponseEntity를 사용한다.  
 
 ## ResponseEntity
-ResponseEntity는 HTTP 응답을 빠르게 만들어주기 위한 객체이다.  
+**ResponseEntity는 HTTP 응답을 빠르게 만들어주기 위한 객체**이다.  
 @ResponseBody는 어노테이션을 통해 해당 메소드가 view가 아닌 데이터를 return하지만,  
 ResponseEntity는 객체로 사용된다. 즉 응답으로 보낼 Header, Status, Body를 모두 담은 요소를  
 ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Status 응답 코드와 Header를 보다  
 유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
+
+- ResponseEntity.ok()
+
+- Status 변경
+
+- Header 추가
 
 ## ResponseEntity 사용 이유
 

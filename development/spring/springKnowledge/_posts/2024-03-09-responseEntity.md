@@ -121,6 +121,7 @@ ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Stat
 유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
 
 - ResponseEntity.ok()  
+
 ~~~java
 @GetMapping("/rest/member")
 public ResponseEntity<String> responseEntityMethodTest(){
@@ -240,3 +241,12 @@ public ResponseEntity<?> responseEntityGenericTest(){
 ## ResponseEntity 사용 이유
 
 ResponseEntity의 사용 이유를 살펴보면 다음과 같다.  
+
+- Http 규약에 맞게 응답을 제어할 수 있다.  
+- 여러 종류의 Http 응답을 제공가능하다.(JSON, XML, HTML)
+- Restful API 규격에 맞는 API를 제공할 수 있다.  
+
+Restful API의 필요성과 사용량이 늘어나면서 해당 데이터를 제공할 때,  
+규약에 맞게 제공할 필요가 있다. 이에 따라 ResponseEntity 객체를 이용하여,  
+Http 응답을 유연하게 생성할 수 있다는 것이 가장 큰 장점이다.  
+따라서 ResponseEntity를 사용할 때 적절한 응답코드와 헤더를 설정하는 것이 중요하다.  

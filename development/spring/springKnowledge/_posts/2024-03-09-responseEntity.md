@@ -28,7 +28,7 @@ Client Side에서만 해당 스마트 기기에 맞게 UI를 구현해주고 하
 Http Reponse는 크게 **Status, Headers, Body** 3가지로 구성된다.  
 
 ### Status
-status는 상태 코드로 200,201...400,401처럼 응답의 상태코드를 나타낸다. 
+Status는 상태 코드로 200,201...400,401처럼 응답의 상태코드를 나타낸다. 
 
 Response Status (참고 자료)
 - 1xx : 전송 프로토콜 수준의 정보 교환
@@ -37,25 +37,25 @@ Response Status (참고 자료)
 - 4xx : 클라이언트의 잘못된 요청
 - 5xx : 서버쪽 오류로 인한 상태 코드  
 
-### Headers
-Headers는 응답으로 부가적인 정보를 전송할 수 있도록 해준다.    
+### Header
+Header는 응답으로 부가적인 정보를 전송할 수 있도록 해준다.    
 Header에는 주로 인증과 캐싱에 대한 정보를 담으며, 전송할 데이터(JSON,XML)과 함께 요구사항 정보를  
-추가해야 한다면 Headers에 정보를 담아서 전송할 수 있도록 한다.  
+추가해야 한다면 Header에 정보를 담아서 전송할 수 있도록 한다.  
 
 ### Body
 Body부분이 Client측으로 전송할 데이터이다. JSON, XML, HTML등의 데이터를 포함한다.  
 
 ## Controller / RestController
-Controller에서도 Client측으로 데이터 전송이 가능하다. 단 일반적인 @Controller 어노테이션은  
-view(화면)을 return하기 때문에 **@ResponseBody**를 추가하여야 view를 return하는 것이 아닌  
-직접 데이터를 return한다. @ResponseBody를 이용할 경우 Spring은 HTTP 응답에 return하는 데이터 값을  
-자동으로 변경해준다. 따라서 Controller Class에서 각 메소드에 @ResponseBody를 붙여주면  
-데이터를 전송하는 API를 만들 수 있다.  
+Controller에서도 Client측으로 데이터 전송이 가능하다.  
+단 일반적인 @Controller 어노테이션은 view(화면)을 return하기 때문에  
+**@ResponseBody**를 추가하여야 view를 return하는 것이 아닌 직접 데이터를 return한다.  
+@ResponseBody를 이용할 경우 Spring은 HTTP 응답에 return하는 데이터 값을 자동으로 변경해준다.  
+Controller Class에서 각 메소드에 @ResponseBody를 붙여주면 데이터 전송 API를 만들 수 있다.   
 
 **Spring4.0**부터는 **@RestController** 어노테이션을 선언해주면서 컨트롤러 클래스의 각 메서드마다  
 @ResponseBody를 추가할 필요가 없어졌고, 모든 메서드는 @ResponseBody 애노테이션이 기본으로 작동이 된다.  
 
-즉 **@RestController와 @Controller + 모든 메소드의 @ResponseBody**는 같은 것이다.  
+즉 **@RestController** 와 **@Controller + 모든 메소드의 @ResponseBody**는 **같은 것**이다.  
 
 ### @Controller + @ResponseBody
 ~~~java
@@ -86,8 +86,8 @@ public class MemberRestController {
 
 해당 코드는 @Controller + @ResponseBody와 @RestController를 통해 Java Object를 return해준다.  
 PostMan으로 테스트 하였을 때 각 데이터인 Java String 객체가 return된다.  
-위에서 설명한 것처럼 @ResponseBody를 이용할 경우 Spring은 Http 응답에  
-응답 상태코드는 200, Header에 대한 정보는 기본적으로 5가지의 정보를 담아서 return해준다.  
+위에서 설명한 것처럼 @ResponseBody를 이용할 경우  
+Spring은 Http 응답에 응답 상태코드는 200, Header에 대한 정보는 5가지의 정보를 담아서 return해준다.  
 
 즉 @ResponseBody + @Controller와  @RestController로 테스트한 결과를 정리하면 다음과 같다.  
 
@@ -105,18 +105,19 @@ public String responseBodyStatusTestMethod(){
 }
 ~~~
 
-- ![Full-image](/assets/img/responseEntity/ResponseStatus.png){:.lead width="300" height="100" loading="lazy"}
+- ![Full-image](/assets/img/responseEntity/ResponseStatus.png){:.lead width="300" height="100" loading="lazy"}  
+
 물론 @ResponseBody를 이용해서 응답 상태코드는 변환이 가능하다.  
 위의 코드처럼 @ResponseStatus()를 이용하여 HttpStatus 객체를 통해 원하는 응답 상태코드를 설정할 수 있다.  
 여기서는 ACCEPTED로 설정하여 아래에 응답이 200이 아닌 202로 설정된 것을 볼 수 있다.  
 
 이처럼 상태코드 변환은 가능하지만 단점으로는 HTTP 규약 중  
-하나인 **Header에 대해서는 유동적으로 설정하기 어렵다**는 것이다. 따라서 ResponseEntity를 사용한다.  
+하나인 **Header에 대해서는 유동적으로 설정하기 어렵다**는 것이다. 따라서 **ResponseEntity**를 사용한다.  
 
 ## ResponseEntity
 **ResponseEntity는 HTTP 응답을 빠르게 만들어주기 위한 객체**이다.  
 @ResponseBody는 어노테이션을 통해 해당 메소드가 view가 아닌 데이터를 return하지만,  
-ResponseEntity는 객체로 사용된다. 즉 응답으로 보낼 Header, Status, Body를 모두 담은 요소를  
+**ResponseEntity는 객체로 사용**된다. 즉 응답으로 보낼 Header, Status, Body를 모두 담은 요소를  
 ResponseEntity 객체로 만들어서 반환하는 것이다. 이를 통해 Status 응답 코드와 Header를 보다  
 유동적으로 객체의 구성요소로 포함시켜 데이터를 return할 수 있다.  
 
@@ -150,8 +151,8 @@ public ResponseEntity<String> responseEntityStatusTest(){
 ~~~
 - ![Full-image](/assets/img/responseEntity/responseEntityStatus.png){:.lead width="300" height="100" loading="lazy"}
 
-만약 응답 상태코드를 변경하고 싶다면 builder 패턴을 이용하므로 ResponseEntity 객체의  
-status를 호출하여 HttpStatus 객체를 이용하여 응답코드를 변경할 수 있다.  
+만약 응답 상태코드를 변경하고 싶다면 builder 패턴을 이용하므로 ResponseEntity 객체의 status를 호출하여  
+HttpStatus 객체를 이용하여 응답코드를 변경할 수 있다.  
 
 - Header 추가  
 ~~~java
@@ -165,23 +166,21 @@ public ResponseEntity<String> responseEntityHeaderTest(){
 - ![Full-image](/assets/img/responseEntity/responseEntityHeader.png){:.lead width="300" height="100" loading="lazy"}
 - ![Full-image](/assets/img/responseEntity/responseEntityModifyHeader.png){:.lead width="300" height="100" loading="lazy"}
 
-만약 Header를 변경하고 싶다면 HttpHeaders 객체를 생성한 후 set() 메소드를 통해  
+만약 Header를 변경하고 싶다면 **HttpHeaders 객체**를 생성한 후 set() 메소드를 통해  
 key와 value 값을 설정해줄 수 있다. 그 후 위와 마찬가지로 builder 패턴을 이용하므로,  
-ResponseEntity 객체의 headers를 호출하여 HttpHeaders 객체를 전달해준다.  
+**ResponseEntity 객체의 headers를 호출**하여 HttpHeaders 객체를 전달해준다.  
 위의 사진을 보면 Header에 Type : HeaderTest 이렇게 key와 value값으로 추가된 것을 볼 수 있다.  
 
+ResponseEntity 객체를 정리하면 다음과 같다.  
 
-ResponseEntity 객체를 테스트 하였을때를 정리하면 다음과 같다.  
+- **Status** - 응답을 성공적으로 반환한다면 200
+- **Header** - 5개의 정보
+- **Body** - Java Object
 
-- Status - 응답을 성공적으로 반환한다면 200
-- Header - 5개의 정보
-- Body - Java Object
-
-@ResponseBody를 이용하였을 때와 동일하지만 ResponseEntity는 좀 더 유동적이라는 장점이 있다.  
+@ResponseBody를 이용하였을 때와 동일하지만 <span style="background-color:#fff5b1">ResponseEntity는 좀 더 유동적이라는 장점이 있다. </span>
 @ResponseBody를 이용할 경우 상태코드를 변경하기 위해서는 @ResponseStatus를 이용해야하고,  
 Header를 변경하기 위해서는 추가적인 로직이 필요하다. 즉 유연하지 못하다.  
-하지만 ResponseEntity 객체를 이용하면 Builder 패턴을 이용하여 쉽게 응답 상태코드와 Header 정보를  
-변경할 수 있다.  
+하지만 <span style="background-color:#fff5b1">ResponseEntity 객체를 이용하면 Builder 패턴을 이용하여 쉽게 응답 상태코드와 Header 정보를 변경할 수 있다.</span>
 
 ### Builder 패턴의 사용 이유
 ~~~java
@@ -221,11 +220,12 @@ public ResponseEntity<String> responseEntityConstructorTest(){
 ~~~
 
 위의 코드처럼 응답 상태코드 전달 시 응답코드를 하드코딩으로 해야되기 때문에,  
-Builder Pattern을 권장하는 것이다.  
+**Builder Pattern**을 권장하는 것이다.  
 
 ### 와일드카드
-이는 어려운 게념이 아닌 제네릭 타입을 사용하겠다는 것이다.  
-즉 제네릭 타입으로 타입을 명시하지 않고, 런타임까지 유연하게 ResponseEntity 객체를 이용하겠다는 것이다.  
+이는 어려운 게념이 아닌 **제네릭 타입**을 사용하겠다는 것이다.  
+즉 <span style="background-color:#fff5b1">제네릭 타입으로 타입을 명시하지 않고, 런타임까지 유연하게 ResponseEntity 객체를 이용하겠다는 것이다.</span>
+
 
 ~~~java
 @GetMapping("/rest/generic/member")
@@ -234,19 +234,19 @@ public ResponseEntity<?> responseEntityGenericTest(){
 }
 ~~~
 
-하지만 이와 같은 방법은 권장되지 않는다.  
+하지만 이와 같은 방법은 **권장되지 않는다.**  
 와일드카드는 객체 지향 개념에 적합하지 않고 가독성까지 떨어진다는 단점을 보유하고 있다.  
-따라서 객체 타입이 명확하지 않은 경우 제네릭 타입보다는 Object 타입을 사용하는 것이 좋다.  
+따라서 객체 타입이 명확하지 않은 경우 **제네릭 타입보다는 Object 타입을 사용**하는 것이 좋다.  
+
 
 ## ResponseEntity 사용 이유
 
 ResponseEntity의 사용 이유를 살펴보면 다음과 같다.  
 
-- Http 규약에 맞게 응답을 제어할 수 있다.  
-- 여러 종류의 Http 응답을 제공가능하다.(JSON, XML, HTML)
-- Restful API 규격에 맞는 API를 제공할 수 있다.  
+- <span style="background-color:#fff5b1">Http 규약에 맞게 응답을 제어할 수 있다.  </span>
+- <span style="background-color:#fff5b1">여러 종류의 Http 응답을 제공가능하다.(JSON, XML, HTML)</span>
+- <span style="background-color:#fff5b1">Restful API 규격에 맞는 API를 제공할 수 있다.</span>
 
-Restful API의 필요성과 사용량이 늘어나면서 해당 데이터를 제공할 때,  
-규약에 맞게 제공할 필요가 있다. 이에 따라 ResponseEntity 객체를 이용하여,  
-Http 응답을 유연하게 생성할 수 있다는 것이 가장 큰 장점이다.  
+Restful API의 필요성과 사용량이 늘어나면서 해당 데이터를 제공할 때, 규약에 맞게 제공할 필요가 있다. 
+이에 따라 ResponseEntity 객체를 이용하여, Http 응답을 유연하게 생성할 수 있다는 것이 가장 큰 장점이다.  
 따라서 ResponseEntity를 사용할 때 적절한 응답코드와 헤더를 설정하는 것이 중요하다.  

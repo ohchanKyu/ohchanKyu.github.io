@@ -13,8 +13,14 @@ sitemap: false
 
 ## Posts
 
-[Spring-Development] - Spring 개발 및 Tip 정리  
-[Spring-Knowledge] - Spring 개발 과정에서의 이슈 및 관점 정리  
+## [Spring-Development]
+
+Spring boot 개발 및 Tip 정리   
+
+
+## [Spring-Knowledge]
+
+Spring 개발 과정에서의 이슈 및 관점 정리  
 
 
 [Spring-Development]: ./spring/springDevelopment.md

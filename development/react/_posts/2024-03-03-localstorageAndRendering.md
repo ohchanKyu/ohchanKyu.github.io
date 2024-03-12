@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "useContext의 상태 갱신 문제"
+title:  "[React] useContext의 상태 갱신 문제"
 date:   2024-03-03 01:38:04 +0900
 
 ---

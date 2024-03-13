@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "[Spring] Filter, Interceptor 인증은 어디에서"
+title:  "[Spring] Filter와 Interceptor 인증은 어디에서?"
 date:   2024-03-09 01:38:04 +0900
 
 ---
@@ -44,131 +44,20 @@ Filter를 보면 Spring Context 밖에 존재하고 Web Context 안에 존재한
 위의 구조를 보면 Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 못한다.**   
 하지만 **Filter Interface를 구현한 객체는 Bean으로 등록이 가능하다.**  
 
-~~~java
-// file: "Filter.java"
-public interface Filter {
-    public default void init(FilterConfig filterConfig) throws ServletException {}
-
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException;
-
-    public default void destroy() {}
-}
-~~~
-Filter Interface 구조는 다음과 같다.  
-
-init() : 필터 가 생성될 때 수행되는 메소드  
-doFilter() : Request, Response가 필터를 거칠 때 수행되는 메소드  
-destroy() : 필터가 소멸될 때 수행되는 메소드  
-
-doFilter() 메소드를 통해 필터를 통해 처리하고 싶은 로직을 작성할 수 있다.  
-init()과 destroy()는 Application 실행과 종료 시에 한번씩만 실행된다.  
-
-~~~java
-// file: "LogFilter.java"
-@Slf4j
-public class LogFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("Log Filter Init!");
-    }
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-
-        String requestURL = request.getRequestURI();
-        String uuid = UUID.randomUUID().toString();
-
-        log.info("REQUEST URL : [{}] [{}]",uuid,requestURL);
-        filterChain.doFilter(servletRequest,servletResponse);
-    }
-
-    @Override
-    public void destroy() {
-        log.info("Log Filter Destroy!");
-    }
-}
-~~~
-- Filter 생성  
-- ![Full-image](/assets/img/filterAndInterceptor/logFilterInit.png){:.lead width="300" height="100" loading="lazy"}
-
-- Filter 진행    
-- ![Full-image](/assets/img/filterAndInterceptor/logFilterDoFilter.png){:.lead width="300" height="100" loading="lazy"}
-
-- Filter 종료  
-- ![Full-image](/assets/img/filterAndInterceptor/logFilterDestroy.png){:.lead width="300" height="100" loading="lazy"}
-
-LogFilter Class는 Filter Class를 구현한 것으로 위의 3개의 메소드를 Override하여 구현한다.  
-
-
-~~~java
-// file: "WebMvcConfiguration.java"
-@Configuration
-public class WebMvcConfiguration implements WebMvcConfigurer {
-
-    @Bean
-    public FilterRegistrationBean<Filter> logFilter(){
-        FilterRegistrationBean<Filter> logFilter = new FilterRegistrationBean<Filter>();
-        logFilter.setFilter(new LogFilter());
-        logFilter.setOrder(1);
-        return logFilter;
-    }
-}
-~~~
-
-### Filter Chain
-~~~java
-// file: "XssFilter.java"
-@Slf4j
-public class XssFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("XSS filter init!");
-    }
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        log.info("XSS filter do filter!");
-        filterChain.doFilter(servletRequest,servletResponse);
-    }
-
-    @Override
-    public void destroy() {
-        log.info("XSS filter destroy!");
-    }
-}
-
-@Configuration
-public class WebMvcConfiguration implements WebMvcConfigurer {
-
-    @Bean
-    public FilterRegistrationBean<Filter> logFilter(){
-        FilterRegistrationBean<Filter> logFilter = new FilterRegistrationBean<Filter>();
-        logFilter.setFilter(new LogFilter());
-        logFilter.setOrder(1);
-        return logFilter;
-    }
-
-    @Bean
-    public FilterRegistrationBean<Filter> securityFilter(){
-        FilterRegistrationBean<Filter> xssFilter = new FilterRegistrationBean<Filter>();
-        xssFilter.setFilter(new XssFilter());
-        xssFilter.setOrder(2);
-        return xssFilter;
-    }
-}
-~~~
 
 ## Interceptor
 
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}
 
 
-### 차이점
+## 차이점
 공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler로
  예외를 처리하기 위해서는,  
 Interceptor 구현이 편리하다.
 
+## 관련 포스트
+### [Web-Context-Filter]
+
 출처 : https://mangkyu.tistory.com/173
+
+[Web-Context-Filter]: ../../springDevelopment/_posts/2024-02-26-Filter.md

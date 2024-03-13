@@ -54,13 +54,57 @@ public interface Filter {
     public default void destroy() {}
 }
 ~~~
+
+~~~java
+// file: "LogFilter.java"
+@Slf4j
+public class LogFilter implements Filter {
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("Log Filter Init!");
+    }
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        String requestURL = request.getRequestURI();
+        String uuid = UUID.randomUUID().toString();
+
+        log.info("REQUEST URL : [{}] [{}]",uuid,requestURL);
+        filterChain.doFilter(servletRequest,servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+        log.info("Log Filter Destroy!");
+    }
+}
+~~~
+
+~~~java
+// file: "WebMvcConfiguration.java"
+@Configuration
+public class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Bean
+    public FilterRegistrationBean<Filter> logFilter(){
+        FilterRegistrationBean<Filter> logFilter = new FilterRegistrationBean<Filter>();
+        logFilter.setFilter(new LogFilter());
+        logFilter.setOrder(1);
+        return logFilter;
+    }
+}
+~~~
+
 ### Interceptor
 
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}
 
 
 ### 차이점
-공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler를 처리하기 위해서는
+공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler로 예외를 처리하기 위해서는,  
 Interceptor 구현이 편리하다.
 
 출처 : https://mangkyu.tistory.com/173

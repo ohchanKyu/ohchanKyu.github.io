@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "[Spring] Filter / Interceptor 차이점 및 사용"
+title:  "[Spring] Filter, Interceptor 인증은 어디에서"
 date:   2024-03-09 01:38:04 +0900
 
 ---

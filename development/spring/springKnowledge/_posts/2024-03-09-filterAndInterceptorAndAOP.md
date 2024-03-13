@@ -98,6 +98,49 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 }
 ~~~
 
+### Filter Chain
+~~~java
+// file: "XssFilter.java"
+@Slf4j
+public class XssFilter implements Filter {
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("XSS filter init!");
+    }
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        log.info("XSS filter do filter!");
+        filterChain.doFilter(servletRequest,servletResponse);
+    }
+
+    @Override
+    public void destroy() {
+        log.info("XSS filter destroy!");
+    }
+}
+
+@Configuration
+public class WebMvcConfiguration implements WebMvcConfigurer {
+
+    @Bean
+    public FilterRegistrationBean<Filter> logFilter(){
+        FilterRegistrationBean<Filter> logFilter = new FilterRegistrationBean<Filter>();
+        logFilter.setFilter(new LogFilter());
+        logFilter.setOrder(1);
+        return logFilter;
+    }
+
+    @Bean
+    public FilterRegistrationBean<Filter> securityFilter(){
+        FilterRegistrationBean<Filter> xssFilter = new FilterRegistrationBean<Filter>();
+        xssFilter.setFilter(new XssFilter());
+        xssFilter.setOrder(2);
+        return xssFilter;
+    }
+}
+~~~
+
 ### Interceptor
 
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}

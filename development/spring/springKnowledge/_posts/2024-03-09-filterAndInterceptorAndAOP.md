@@ -41,8 +41,11 @@ Filter를 보면 Spring Context 밖에 존재하고 Web Context 안에 존재한
 필터는 주로 요청에 대한 XSS방어, 인코딩 변환처리, 요청에 대한 인증, 권한 체크 등에 사용된다.  
 예를 들어 JWT 인증을 구현하였다면, Filter를 통해 헤더에 해당 유효한 토큰이 있는지 검사할 수 있다.  
 이에 대표적인 예가 **Spring Security**인 것이다.  
-위의 구조를 보면 Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 못한다.**   
-하지만 **Filter Interface를 구현한 객체는 Bean으로 등록이 가능하다.**  
+
+Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 못한다.**라는 설명이 많다.  
+하지만 Filter 역시 **Bean으로 등록가능하며 다른 Bean 객체로 주입이 가능**하다.  
+이에 대한 자세한 내용은 아래 포스팅을 참고하자.
+[Spring-Filter-Bean] : Filter에서 Bean 객체 사용이 가능한 이유
 
 
 ## Interceptor
@@ -50,14 +53,18 @@ Filter를 보면 Spring Context 밖에 존재하고 Web Context 안에 존재한
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}
 
 
+### Interceptor의 사용
+
+
 ## 차이점
 공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler로
- 예외를 처리하기 위해서는,  
-Interceptor 구현이 편리하다.
+예외를 처리하기 위해서는, Interceptor 구현이 편리하다.
 
 ## 관련 포스트
 ### [Web-Context-Filter]
 
 출처 : https://mangkyu.tistory.com/173
+    https://mangkyu.tistory.com/221
 
 [Web-Context-Filter]: ../../springDevelopment/_posts/2024-02-26-Filter.md
+[Spring-Filter-Bean]: ./2024-03-13-FilterBean.md

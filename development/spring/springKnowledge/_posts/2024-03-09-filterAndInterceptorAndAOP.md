@@ -44,8 +44,8 @@ Filter를 보면 Spring Context 밖에 존재하고 Web Context 안에 존재한
 
 Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 못한다.**라는 설명이 많다.  
 하지만 Filter 역시 **Bean으로 등록가능하며 다른 Bean 객체로 주입이 가능**하다.  
-이에 대한 자세한 내용은 아래 포스팅을 참고하자.
-[Spring-Filter-Bean] : Filter에서 Bean 객체 사용이 가능한 이유
+이에 대한 자세한 내용은 아래 포스팅을 참고하자.  
+[Spring-Filter-Bean] - Filter에서 Bean 객체 사용이 가능한 이유
 
 
 ## Interceptor
@@ -62,6 +62,7 @@ Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 �
 
 ## 관련 포스트
 ### [Web-Context-Filter]
+### [Spring0-Filter-Bean]
 
 출처 : https://mangkyu.tistory.com/173
     https://mangkyu.tistory.com/221

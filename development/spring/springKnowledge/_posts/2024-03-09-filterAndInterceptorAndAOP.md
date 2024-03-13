@@ -147,7 +147,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
 
 ### 차이점
-공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler로 예외를 처리하기 위해서는,  
+공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler로
+ 예외를 처리하기 위해서는,  
 Interceptor 구현이 편리하다.
 
 출처 : https://mangkyu.tistory.com/173

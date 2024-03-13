@@ -55,6 +55,14 @@ public interface Filter {
     public default void destroy() {}
 }
 ~~~
+Filter Interface 구조는 다음과 같다.  
+
+init() : 필터 가 생성될 때 수행되는 메소드  
+doFilter() : Request, Response가 필터를 거칠 때 수행되는 메소드  
+destroy() : 필터가 소멸될 때 수행되는 메소드  
+
+doFilter() 메소드를 통해 필터를 통해 처리하고 싶은 로직을 작성할 수 있다.  
+init()과 destroy()는 Application 실행과 종료 시에 한번씩만 실행된다.  
 
 ~~~java
 // file: "LogFilter.java"
@@ -83,6 +91,16 @@ public class LogFilter implements Filter {
     }
 }
 ~~~
+- Filter 생성  
+- ![Full-image](/assets/img/filterAndInterceptor/logFilterInit.png){:.lead width="300" height="100" loading="lazy"}
+
+- Filter 진행    
+- ![Full-image](/assets/img/filterAndInterceptor/logFilterDoFilter.png){:.lead width="300" height="100" loading="lazy"}
+
+- Filter 종료  
+- ![Full-image](/assets/img/filterAndInterceptor/logFilterDestroy.png){:.lead width="300" height="100" loading="lazy"}
+LogFilter Class는 Filter Class를 구현한 것으로 위의 3개의 메소드를 Override하여 구현한다.  
+
 
 ~~~java
 // file: "WebMvcConfiguration.java"
@@ -142,7 +160,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 }
 ~~~
 
-### Interceptor
+## Interceptor
 
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}
 

@@ -61,8 +61,8 @@ Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 �
 예외를 처리하기 위해서는, Interceptor 구현이 편리하다.
 
 ## 관련 포스트
-### [Web-Context-Filter]
-### [Spring0-Filter-Bean]
+- [Web-Context-Filter]
+- [Spring-Filter-Bean]
 
 출처 : https://mangkyu.tistory.com/173
     https://mangkyu.tistory.com/221

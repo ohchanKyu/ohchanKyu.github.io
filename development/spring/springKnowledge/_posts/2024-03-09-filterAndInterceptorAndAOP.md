@@ -99,6 +99,7 @@ public class LogFilter implements Filter {
 
 - Filter 종료  
 - ![Full-image](/assets/img/filterAndInterceptor/logFilterDestroy.png){:.lead width="300" height="100" loading="lazy"}
+
 LogFilter Class는 Filter Class를 구현한 것으로 위의 3개의 메소드를 Override하여 구현한다.  
 
 

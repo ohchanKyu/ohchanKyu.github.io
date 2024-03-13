@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "[Spring] Filter / Interceptor / AOP"
+title:  "[Spring] Filter / Interceptor 로그인 처리는 어디에서?"
 date:   2024-03-09 01:38:04 +0900
 
 ---
@@ -9,9 +9,9 @@ date:   2024-03-09 01:38:04 +0900
 0. this unordered seed list will be replaced by toc as unordered list
 {:toc}
 
-## Filter / Interceptor / AOP
-Spring Project를 작성하다보면 공통적인 로직이 많이 나오는 경우가 많다.  
-이러한 로직을 처리하기 위해 Filter, Interceptor, AOP 등을 사용한다.  
+## Filter / Interceptor
+Spring Project를 작성하다보면 **공통적인 로직**이 많이 나오는 경우가 많다.  
+이러한 로직을 처리하기 위해 Filter, Interceptor 등을 사용한다.  
 
 ### Filter
 필터(Filter)는 디스패치 서블릿에게 요청이 전달되기 전/후에 URL 패턴에 맞는  
@@ -33,20 +33,34 @@ Filter를 보면 Spring Context 밖에 존재하고 Web Context 안에 존재한
 3. Filter에서 공통 로직을 처리한다.  
 4. Spring Context에 있는 디스패치 서블릿으로 요청이 전달된다.  
 5. Spring Context에 있는 우리가 직접 만든 Controller로 요청이 전달되고 로직을 수행한다.  
- 
-### Filter Method
 
+
+### Filter의 사용
+그렇다면 Filter는 언제 써야될까?  
+필터는 주로 요청에 대한 XSS방어, 인코딩 변환처리, 요청에 대한 인증, 권한 체크 등에 사용된다.  
+예를 들어 JWT 인증을 구현하였다면, Filter를 통해 헤더에 해당 유효한 토큰이 있는지 검사할 수 있다.  
+이에 대표적인 예가 **Spring Security**인 것이다.  
+위의 구조를 보면 Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 못한다.**   
+하지만 **Filter Interface를 구현한 객체는 Bean으로 등록이 가능하다.**  
+
+~~~java
+// file: "Filter.java"
+public interface Filter {
+    public default void init(FilterConfig filterConfig) throws ServletException {}
+
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException;
+
+    public default void destroy() {}
+}
+~~~
 ### Interceptor
-
 
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}
 
-### AOP
 
-## Filter Code
-
-## Interceptor Code
-
-## AOP Code
+### 차이점
+공통로직을 처리하는 것은 동일하지만 전역 Spring ExceptionHandler를 처리하기 위해서는
+Interceptor 구현이 편리하다.
 
 출처 : https://mangkyu.tistory.com/173

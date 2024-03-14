@@ -108,8 +108,8 @@ public interface HandlerInterceptor {
 }
 ~~~
 HandlerInterceptor Interface는 다음과 같다.  
-- preHandler : 컨트롤러 호출 전에 호출되며 반환 타입은 Boolean 이다.  
-- postHandler : 컨트롤러 호출 후 ModelAndView를 반환한 뒤에 호출된다.    
+- preHandle : 컨트롤러 호출 전에 호출되며 반환 타입은 Boolean 이다.  
+- postHandle : 컨트롤러 호출 후 ModelAndView를 반환한 뒤에 호출된다.    
 - afterCompletion : 뷰가 렌더링 된 후에 호출된다.  
 
 아래 그림을 통해 이해를 높일 수 있다.  
@@ -132,7 +132,6 @@ Interceptor는 Spring Context 작동하다 보니 Filter보다 좀 더 정교한
 그리고 사용 예시를 보면 Filter에서 구현한 것은 Interceptor에서도 구현가능해 보인다.  
 따라서 **Filter와 Interceptor에서만 가능한 구현**을 정확하게 이해할 필요가 있다.  
 
-
 ## 세분화된 차이점
 Filter와 Interceptor의 차이점은 다음과 같다.  
 - 예외 처리
@@ -147,16 +146,16 @@ Filter는 Web Context 영역에서 관리되므로 예외가 발생한다면 Spr
 Web Context에 있는 Servlet으로 전달하기 때문에 Web Server(WAS)는 500 상태 코드로 응답한다.  
 
 ~~~java
-  @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+@Override
+public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-		HttpServletRequest request = (HttpServletRequest) servletRequest;
-		String token = jwtUtils.resolveToken(request);
-		
-		if (!jwtUtils.validateToken(token)){
-			throw new CustomJwtException(token);
-		}
-    }
+	HttpServletRequest request = (HttpServletRequest) servletRequest;
+	String token = jwtUtils.resolveToken(request);
+	
+	if (!jwtUtils.validateToken(token)){
+		throw new CustomJwtException(token);
+	}
+}
 ~~~
 위의 예시처럼 해당 코드가 있다고 하자.  
 만약 요청 토큰이 유효하지 않다면 CustomJwtException을 예외로 던져준다.  
@@ -165,14 +164,13 @@ Web Context에 있는 Servlet으로 전달하기 때문에 Web Server(WAS)는 50
 ~~~java
 @Override
 public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
+	log.info("ExceptionTestFilter do filter!");
 	HttpServletResponse response = (HttpServletResponse) servletResponse;
 	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-	response.getWriter().print("Invalid Token");
-
-	filterChain.doFilter(servletRequest,servletResponse);
+	response.getWriter().write("InValid Authorized!");
 }
 ~~~
+- ![Full-image](/assets/img/filterAndInterceptor/exceptionTest1.png){:.lead width="300" height="100" loading="lazy"}
 
 만약 Filter에서 예외처리를 하기 위해서는 위의 코드처럼  
 servletResponse 응답 객체를 통해 상태코드를 설정하고 메시지를 설정해주어야 한다.  
@@ -190,8 +188,24 @@ Spring Context 안에서 예외 처리를 하여 Client에게 전달이 가능�
 
 ### ServletRequest, ServletResponse
 Filter에서는 **ServletRequest와 ServletResponse를 교체**할 수 있다.  
-내부 상태를 변경한다는 것이 아니다.(내부 상태는 Interceptor도 변경 가능,  
-하지만 객체 자체를 교체하지 못함) 다음과 같이 다른 객체로 교체할 수 있다는 것이다.  
+이는 Request와 Response의 내부 상태를 변경하는 것이 아닌  
+아예 다른 Request, Response 객체로 변경하는 것이다.  
+이에 대한 예시로는 HttpServletRequest의 body를 로깅할때가 있다.  
+**HttpServletRequest는 body의 내용을 한 번만 읽을 수 있다.**  
+
+REST API를 구현 시, Filter에서 Json형태의 body를 데이터로 받아 모두 로깅할때가 있다.  
+이때 Filter에서 body를 읽기 위해 getInputStream()을 사용하는데,  
+InputStream은 한 번 읽으면 다시 읽을 수가 없다.  
+따라서 Interceptor나 Filter에서 body를 읽게 된다면, Controller에서 body로 읽은  
+Json 데이터를 바인딩할 때 IO Exception이 발생하게 된다.  
+
+~~~java
+@Override
+public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+	 filterChain.doFilter(new CustomServletRequest(servletRequest),servletResponse);
+}
+~~~
+따라서 위처럼 여러 번 inputStream을 열 수 있도록 Custom ServletRequest를 사용해야 한다.  
 
 ### View Rendering
 Interceptor의 postHandle()에서 ModelAndView() 객체를 파라미터로 받을 수 있다.  

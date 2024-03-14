@@ -88,7 +88,7 @@ false를 return 한다면 Controller의 로직을 실행하지 않고 요청이 
 5. **Spring Context에 존재하는 Interceptor를 거치게 된다. (2개 이상일 경우 등록 순으로 전달됨)**  
 6. Spring Context에 있는 우리가 직접 만든 Controller로 요청이 전달되고 로직을 수행한다.  
 
-Filter와 다르게 5번이 추가된 것으로 디스패치 서블릿의 요청을 가로채는 것이다.  
+Filter와 다르게 5번이 추가된 것으로 디스패치 서블릿의 요청을 Interceptor에서 가로챈다.  
 
 ~~~java
 public interface HandlerInterceptor {
@@ -134,10 +134,75 @@ Interceptor는 Spring Context 작동하다 보니 Filter보다 좀 더 정교한
 
 
 ## 세분화된 차이점
-공통로직을 처리한다는 점은 Filter와 Interceptor와 같다.  
-하지만 Filter와 Interceptor의 차이점이 존재한다.  
-Filter는 단순히 디스패치 서블릿 호출 전 doFilter 하나만 호출되어 사용되는데,  
+Filter와 Interceptor의 차이점은 다음과 같다.  
+- 예외 처리
+- ServletRequest, ServletResponse 교체 
+- View 렌더링의 제어
 
+### 예외 처리
+Filter와 Interceptor은 다른 Context에 위치하기 때문에 예외를 처리하는 부분이 다르다.  
+Filter는 Web Context 영역에서 관리되므로 예외가 발생한다면 Spring Context의 도움을 받지 않는다.  
+만약 JWT를 Filter를 통해 권한 토큰 검사를 할 경우 유요하지 않은 인증이라면  
+상태코드 401과 함께 예외처리를 해야한다. 하지만 Filter에서 Exception을 던진다면,  
+Web Context에 있는 Servlet으로 전달하기 때문에 Web Server(WAS)는 500 상태 코드로 응답한다.  
+
+~~~java
+  @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		String token = jwtUtils.resolveToken(request);
+		
+		if (!jwtUtils.validateToken(token)){
+			throw new CustomJwtException(token);
+		}
+    }
+~~~
+위의 예시처럼 해당 코드가 있다고 하자.  
+만약 요청 토큰이 유효하지 않다면 CustomJwtException을 예외로 던져준다.  
+하지만 이 코드는 **CustomJwtException을 예외로 던지지 않고, 500을 응답코드**로 던져준다.  
+
+~~~java
+@Override
+public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+	HttpServletResponse response = (HttpServletResponse) servletResponse;
+	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	response.getWriter().print("Invalid Token");
+
+	filterChain.doFilter(servletRequest,servletResponse);
+}
+~~~
+
+만약 Filter에서 예외처리를 하기 위해서는 위의 코드처럼  
+servletResponse 응답 객체를 통해 상태코드를 설정하고 메시지를 설정해주어야 한다.  
+이는 전역적으로 Exception을 처리하기 힘들고 응답 객체의 메소드를 통해  
+Status, Header, Message 모두 설정해주어야 한다.  
+
+하지만 Interceptor는 **Spring Context안에 있으므로 @ExceptionHandler**를 이용가능하다.  
+이는 Spring에서 제공하는 어노테이션으로 전역적으로 예외를 처리할 수 있도록 해준다.  
+또한 Spring Context안에 존재하므로 ResponseEntity 객체를 이용하여  
+응답 상태를 쉽게 설정할 수 있다는 장점도 존재한다.  
+그리고 예외가 Servlet의 ErrorController로 전달되지 않기 때문에,  
+Spring Context 안에서 예외 처리를 하여 Client에게 전달이 가능하다.  
+
+즉 **전역 예외처리를 위해서는 Interceptor가 유리**한 것이다.  
+
+### ServletRequest, ServletResponse
+Filter에서는 **ServletRequest와 ServletResponse를 교체**할 수 있다.  
+내부 상태를 변경한다는 것이 아니다.(내부 상태는 Interceptor도 변경 가능,  
+하지만 객체 자체를 교체하지 못함) 다음과 같이 다른 객체로 교체할 수 있다는 것이다.  
+
+### View Rendering
+Interceptor의 postHandle()에서 ModelAndView() 객체를 파라미터로 받을 수 있다.  
+ModelAndView를 반환받고 PostHandler()이 호출되기 때문에 가능하다.  
+따라서 View를 렌더링 하기 전에 추가 작업을 해줄 수 있다.  
+
+예를 들어 Admin과 User가 있을 때, 관리자에게만 보여주어야 하는 정보가 있을 것이다.  
+이러한 정보들을 ModelAndView 객체를 통하여 데이터를 변경할 수 있다.  
+
+즉 Filter와 다르게 **요청 처리와 View 렌더링 사이에 무언가를 수행**하려는 경우  
+HandlerInterceptor를 사용하면 제어를 쉽게 할 수 있다.  
 
 ## 관련 포스트
 - [Web-Context-Filter]

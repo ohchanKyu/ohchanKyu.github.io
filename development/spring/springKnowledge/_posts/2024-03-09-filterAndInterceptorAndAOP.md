@@ -196,8 +196,8 @@ Filter에서는 **ServletRequest와 ServletResponse를 교체**할 수 있다.
 REST API를 구현 시, Filter에서 Json형태의 body를 데이터로 받아 모두 로깅할때가 있다.  
 이때 Filter에서 body를 읽기 위해 getInputStream()을 사용하는데,  
 InputStream은 한 번 읽으면 다시 읽을 수가 없다.  
-따라서 Interceptor나 Filter에서 body를 읽게 된다면, Controller에서 body로 읽은  
-Json 데이터를 바인딩할 때 IO Exception이 발생하게 된다.  
+따라서 Interceptor나 Filter에서 body를 읽게 된다면,  
+Controller에서 body로 읽은 Json 데이터를 바인딩할 때 IO Exception이 발생하게 된다.  
 
 ~~~java
 @Override
@@ -205,7 +205,7 @@ public void doFilter(ServletRequest servletRequest, ServletResponse servletRespo
 	 filterChain.doFilter(new CustomServletRequest(servletRequest),servletResponse);
 }
 ~~~
-따라서 위처럼 여러 번 inputStream을 열 수 있도록 Custom ServletRequest를 사용해야 한다.  
+따라서 위처럼 여러 번 InputStream을 열 수 있도록 Custom ServletRequest를 사용해야 한다.  
 
 ### View Rendering
 Interceptor의 postHandle()에서 ModelAndView() 객체를 파라미터로 받을 수 있다.  
@@ -223,8 +223,9 @@ HandlerInterceptor를 사용하면 제어를 쉽게 할 수 있다.
 - [Spring-Filter-Bean]
 
 
-출처 : https://mangkyu.tistory.com/173
-    https://mangkyu.tistory.com/221
-https://parkmuhyeun.github.io/woowacourse/2023-05-05-Filter-Interceptor/
+출처   
+- https://mangkyu.tistory.com/173  
+- https://parkmuhyeun.github.io/woowacourse/2023-05-05-Filter-Interceptor/  
+
 [Web-Context-Filter]: ../../springDevelopment/_posts/2024-02-26-Filter.md
 [Spring-Filter-Bean]: ./2024-03-13-FilterBean.md

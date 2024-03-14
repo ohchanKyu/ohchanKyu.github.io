@@ -134,9 +134,9 @@ Interceptor는 Spring Context 작동하다 보니 Filter보다 좀 더 정교한
 
 ## 세분화된 차이점
 Filter와 Interceptor의 차이점은 다음과 같다.  
-- 예외 처리
-- ServletRequest, ServletResponse 교체 
-- View 렌더링의 제어
+- **예외 처리**  
+- **ServletRequest, ServletResponse 교체**  
+- **View 렌더링의 제어**  
 
 ### 예외 처리
 Filter와 Interceptor은 다른 Context에 위치하기 때문에 예외를 처리하는 부분이 다르다.  
@@ -209,7 +209,7 @@ public void doFilter(ServletRequest servletRequest, ServletResponse servletRespo
 
 ### View Rendering
 Interceptor의 postHandle()에서 ModelAndView() 객체를 파라미터로 받을 수 있다.  
-ModelAndView를 반환받고 PostHandler()이 호출되기 때문에 가능하다.  
+ModelAndView를 반환받고 postHandle()이 호출되기 때문에 가능하다.  
 따라서 View를 렌더링 하기 전에 추가 작업을 해줄 수 있다.  
 
 예를 들어 Admin과 User가 있을 때, 관리자에게만 보여주어야 하는 정보가 있을 것이다.  

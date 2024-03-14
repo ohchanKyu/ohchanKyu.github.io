@@ -218,12 +218,12 @@ ModelAndView를 반환받고 postHandle()이 호출되기 때문에 가능하다
 즉 Filter와 다르게 **요청 처리와 View 렌더링 사이에 무언가를 수행**하려는 경우  
 HandlerInterceptor를 사용하면 제어를 쉽게 할 수 있다.  
 
-## 관련 포스트
+## 관련 포스트  
 - [Web-Context-Filter]
 - [Spring-Filter-Bean]
 
 
-출처  
+## 출처  
 - https://mangkyu.tistory.com/173  
 - https://parkmuhyeun.github.io/woowacourse/2023-05-05-Filter-Interceptor/  
 

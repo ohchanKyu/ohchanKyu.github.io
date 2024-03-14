@@ -46,7 +46,7 @@ public interface Filter {
 }
 ~~~
 Filter Interface는 다음과 같다.  
-- init() : 필터 가 생성될 때 수행되는 메소드  
+- init() : 필터가 생성될 때 수행되는 메소드  
 - doFilter() : Request, Response가 필터를 거칠 때 수행되는 메소드  
 - destroy() : 필터가 소멸될 때 수행되는 메소드  
 
@@ -79,6 +79,17 @@ Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 �
 인터셉터 Class에서 preHandle()을 구현하였을 때 true를 return 시키면 Controller 로직을 수행하고,  
 false를 return 한다면 Controller의 로직을 실행하지 않고 요청이 중단되는 것이다.  
 
+따라서 Interceptor에 의한 전체적인 흐름을 보면 다음과 같다.  
+
+1. 사용자가 URL로 Http 요청을 보낸다.  
+2. Tomcat과 같은 WAS (Web Server)로 요청이 전달된다.  
+3. Filter에서 공통 로직을 처리한다.  
+4. Spring Context에 있는 디스패치 서블릿으로 요청이 전달된다. 
+5. **Spring Context에 존재하는 Interceptor를 거치게 된다. (2개 이상일 경우 등록 순으로 전달됨)**  
+6. Spring Context에 있는 우리가 직접 만든 Controller로 요청이 전달되고 로직을 수행한다.  
+
+Filter와 다르게 5번이 추가된 것으로 디스패치 서블릿의 요청을 가로채는 것이다.  
+
 ~~~java
 public interface HandlerInterceptor {
 	default boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -97,9 +108,9 @@ public interface HandlerInterceptor {
 }
 ~~~
 HandlerInterceptor Interface는 다음과 같다.  
-- preHandler: 컨트롤러 호출 전에 호출되며 반환 타입은 Boolean 이다.  
-- postHandler: 컨트롤러 호출 후 ModelAndView를 반환한 뒤에 호출된다.    
-- afterCompletion: 뷰가 렌더링 된 후에 호출된다.  
+- preHandler : 컨트롤러 호출 전에 호출되며 반환 타입은 Boolean 이다.  
+- postHandler : 컨트롤러 호출 후 ModelAndView를 반환한 뒤에 호출된다.    
+- afterCompletion : 뷰가 렌더링 된 후에 호출된다.  
 
 아래 그림을 통해 이해를 높일 수 있다.  
 - ![Full-image](/assets/img/filterAndInterceptor/interceptorDetail.png){:.lead width="300" height="100" loading="lazy"}

@@ -67,7 +67,7 @@ Filter는 **Spring Context 밖에 존재하므로 Bean 객체를 사용하지 �
 [Spring-Filter-Bean] - Filter에서 Bean 객체 사용이 가능한 이유
 
 
-## Interceptor
+### Interceptor
 
 - ![Full-image](/assets/img/filterAndInterceptor/InterceptorContext.png){:.lead width="300" height="100" loading="lazy"}
 
@@ -131,6 +131,7 @@ Filter는 단순히 디스패치 서블릿 호출 전 doFilter 하나만 호출�
 ## 관련 포스트
 - [Web-Context-Filter]
 - [Spring-Filter-Bean]
+
 
 출처 : https://mangkyu.tistory.com/173
     https://mangkyu.tistory.com/221

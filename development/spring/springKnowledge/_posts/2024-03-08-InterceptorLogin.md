@@ -1,7 +1,7 @@
 ---
 
 layout: post
-title:  "[Spring] Interceptor session 관리와 문제점"
+title:  "[Spring] Interceptor Redirect의 반복 요청 문제"
 date:   2024-03-09 01:38:04 +0900
 
 ---
